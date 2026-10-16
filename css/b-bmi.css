@@ -1,0 +1,136 @@
+/* Avelis «Кришталь» — BMI calculator (DA-4): the embedded one on «Схуднення» and the full page.
+   js/bmi-calculator.js owns the behaviour and the class names; only the look lives here.
+   One device: the marker on the scale moves to the result — a reaction to «Розрахувати», never on its own. */
+
+.bmi-calc-card{display:grid;gap:22px;padding:clamp(22px,3vw,44px);border-radius:30px;background:var(--white);box-shadow:inset 0 0 0 1px var(--line)}
+.bmi-calc-card--embed{grid-template-columns:minmax(0,5fr) minmax(0,6fr);align-items:start;gap:clamp(22px,3vw,40px)}
+.bmi-calc-card__head{display:grid;gap:8px}
+.bmi-calc-card__brand{font-size:var(--fs-small);color:var(--muted)}
+.bmi-calc-card__head h2{font-size:var(--fs-h3);font-weight:300}
+.bmi-form{display:grid;gap:18px}
+
+/* sex: a two-way pill switch */
+.bmi-gender{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;justify-self:start;padding:4px;border-radius:var(--r-pill);background:var(--frost);box-shadow:inset 0 0 0 1px var(--line)}
+.bmi-gender__btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 22px;border-radius:var(--r-pill);font-weight:500;font-size:15px;color:var(--muted);cursor:pointer;transition:background var(--t-fast),color var(--t-fast)}
+.bmi-gender__btn input{position:absolute;opacity:0;width:1px;height:1px}
+.bmi-gender__btn:has(input:checked){background:var(--ink);color:var(--white)}
+.bmi-gender__btn:has(input:focus-visible){outline:2px solid var(--logo);outline-offset:2px}
+.bmi-gender__icon{font-size:14px;opacity:.8}
+
+/* fields: the site's form inputs */
+.bmi-form__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.bmi-form__grid--quad{grid-template-columns:repeat(4,minmax(0,1fr))}
+.bmi-calc-card--embed .bmi-form__grid--quad{grid-template-columns:repeat(2,minmax(0,1fr))}
+.bmi-field{display:grid;gap:6px;align-content:start}
+.bmi-field__label{font-size:14px;font-weight:500;color:var(--muted)}
+.bmi-field__opt{font-weight:400;color:#6f8790}
+.bmi-field__input{width:100%;min-height:52px;padding:12px 16px;border-radius:var(--r-control);border:1px solid var(--line);background:var(--frost);color:var(--ink);
+  font:400 clamp(18px,1.4vw,20px)/1.2 var(--f-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums;transition:border-color var(--t-fast),background var(--t-fast),box-shadow var(--t-fast)}
+.bmi-field__input::placeholder{color:#8aa0a8}
+.bmi-field__input:hover{border-color:rgba(11,52,70,.3)}
+.bmi-field__input:focus{outline:none;border-color:var(--logo);background:var(--white);box-shadow:0 0 0 4px rgba(12,88,129,.12)}
+.bmi-field__select{font:400 16px/1.2 var(--f-body);letter-spacing:0;appearance:none;-webkit-appearance:none;padding-right:44px;
+  background:var(--frost) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%230b3446' stroke-width='1.6'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 18px center}
+.bmi-adv-toggle{justify-self:start;display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;min-height:44px;padding:8px 0;border:0;background:none;cursor:pointer;font-weight:600;font-size:15px;color:var(--logo);text-align:left}
+.bmi-adv-toggle::before{content:"+";font-weight:400;width:12px}
+.bmi-adv-toggle[aria-expanded="true"]::before{content:"−"}
+.bmi-adv-toggle__hint{font-weight:400;color:var(--muted)}
+.bmi-submit{margin-top:4px}
+
+/* scale: five zones in the cold palette, from mist to ink — not a traffic light */
+.bmi-scale{display:grid;gap:8px}
+.bmi-scale__bar{position:relative;display:grid;grid-template-columns:3.5fr 6.5fr 5fr 10fr;height:10px;border-radius:var(--r-pill);overflow:visible}
+.bmi-scale__zone{height:100%}
+.bmi-scale__zone--thin{background:var(--silver);border-radius:999px 0 0 999px}
+.bmi-scale__zone--normal{background:var(--ice)}
+.bmi-scale__zone--over{background:#4d8fa6}
+.bmi-scale__zone--obese{background:var(--ink);border-radius:0 999px 999px 0}
+.bmi-scale__marker{position:absolute;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--white);box-shadow:0 0 0 2px var(--ink),0 6px 14px -6px rgba(11,52,70,.6);transition:left var(--t-slow) var(--ease-out)}
+.bmi-scale__labels{display:flex;justify-content:space-between;font-size:var(--fs-micro);color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* result: the number big, on ink */
+.bmi-result{display:grid;gap:8px;padding:clamp(22px,3vw,36px);border-radius:24px;background:var(--ink);color:var(--white)}
+.bmi-result[hidden]{display:none}
+.bmi-result--animate{animation:bmi-in var(--t-med) var(--ease-out)}
+@keyframes bmi-in{from{opacity:0;transform:translateY(6px)}}
+.bmi-result__label{font-size:var(--fs-small);color:var(--muted-dark)}
+.bmi-result__value{font-family:var(--f-display);font-weight:300;font-size:clamp(48px,6vw,76px);letter-spacing:-.05em;line-height:1}
+.bmi-result__category{justify-self:start;padding:6px 14px;border-radius:var(--r-pill);font-size:var(--fs-small);font-weight:600;background:rgba(248,251,252,.12)}
+.bmi-result__category--ok{background:var(--ice);color:var(--ink)}
+.bmi-result__category--warn,.bmi-result__category--alert{background:var(--white);color:var(--ink)}
+.bmi-result__hint{color:var(--muted-dark);max-width:60ch}
+.bmi-result :focus-visible{outline-color:var(--ice)}
+.bmi-extras{display:grid;gap:10px;margin-top:8px}
+.bmi-extras:empty{display:none}
+.bmi-extra{display:grid;gap:4px;padding:14px 0 0;border-top:1px solid var(--line-dark)}
+.bmi-extra__label{font-size:var(--fs-small);color:var(--muted-dark)}
+.bmi-extra__note{font-size:var(--fs-small);color:var(--muted-dark)}
+
+/* ---------- the full calculator page ---------- */
+/* one big card: the form on the left; the scale, the result and three quiet numbers on the right */
+.bmi-calc-card--page{grid-template-columns:minmax(0,6fr) minmax(0,5fr);grid-template-areas:"head scale" "form result" "form stats";grid-template-rows:auto auto 1fr;column-gap:clamp(28px,4vw,64px);align-items:start}
+.bmi-calc-card--page .bmi-calc-card__head{grid-area:head}
+.bmi-calc-card--page .bmi-form{grid-area:form}
+.bmi-calc-card--page .bmi-scale{grid-area:scale;align-self:end;padding-bottom:4px}
+.bmi-calc-card--page .bmi-result{grid-area:result}
+.bmi-calc-card--page .bmi-stats{grid-area:stats;align-self:end}
+.bmi-adv-panel{padding-top:4px}
+.bmi-result__delta{color:var(--muted-dark);font-size:var(--fs-small)}
+.bmi-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.bmi-stat{display:grid;align-content:start;gap:6px;padding:18px 12px 0 16px;border-left:1px solid var(--line)}
+.bmi-stat:first-child{border-left:0;padding-left:0}
+.bmi-stat strong{font:300 clamp(26px,2.2vw,34px)/1 var(--f-display);letter-spacing:-.04em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bmi-stat span{font-size:var(--fs-micro);color:var(--muted)}
+
+/* categories: light cards; the one that matches the result turns ink */
+.bmi-section-title{margin-bottom:clamp(28px,3.4vw,48px)}
+.pg-sec__head .bmi-section-title{margin-bottom:0}
+.bmi-tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.6vw,20px)}
+.bmi-tier{display:grid;gap:10px;align-content:start;padding:clamp(22px,2.4vw,32px);border-radius:var(--r-card);background:var(--white);box-shadow:inset 0 0 0 1px var(--line);transition:background var(--t-med),color var(--t-med)}
+.bmi-tier__range{font:300 clamp(26px,2.2vw,34px)/1 var(--f-display);letter-spacing:-.04em;color:var(--logo);font-variant-numeric:tabular-nums}
+.bmi-tier__body{display:grid;gap:6px}
+.bmi-tier__name{font:600 var(--fs-lead)/1.3 var(--f-body);letter-spacing:0}
+.bmi-tier__text{font-size:var(--fs-small);color:var(--muted)}
+.bmi-tier.is-active{background:var(--ink);color:var(--white);box-shadow:none}
+.bmi-tier.is-active .bmi-tier__range{color:var(--ice)}
+.bmi-tier.is-active .bmi-tier__text{color:var(--muted-dark)}
+
+/* reference: four cards, numbers in the display face, rows on hairlines */
+.bmi-formulas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1.6vw,20px)}
+.bmi-formula-card{display:grid;gap:18px;align-content:start;padding:clamp(22px,2.6vw,36px);border-radius:var(--r-card);background:var(--white);box-shadow:inset 0 0 0 1px var(--line)}
+.bmi-formula-card__accent{display:none}
+.bmi-formula-card__head{display:flex;align-items:center;gap:14px}
+.bmi-formula-card__icon{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.bmi-formula-card__icon svg{width:22px;height:22px}
+.bmi-formula-card__title{font:600 var(--fs-lead)/1.3 var(--f-body);letter-spacing:0}
+.bmi-formula-card__body{display:grid;gap:12px}
+.bmi-formula-card__formula{font:300 clamp(22px,1.9vw,28px)/1.2 var(--f-display);letter-spacing:-.03em}
+.bmi-formula-card__example{display:grid;gap:4px;padding:14px 16px;border-radius:16px;background:var(--frost);font-size:var(--fs-small)}
+.bmi-formula-card__example-label{font-size:var(--fs-micro);color:var(--muted)}
+.bmi-formula-card__note{font-size:var(--fs-micro);color:var(--muted)}
+.bmi-formula-rows{display:grid;margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.bmi-formula-row{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.bmi-formula-row:last-child{border-bottom:0}
+.bmi-formula-row__label{font-size:var(--fs-small);color:var(--muted)}
+.bmi-formula-row__value{font:400 clamp(18px,1.5vw,22px)/1.2 var(--f-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bmi-formula-rows--stacked .bmi-formula-row{justify-content:flex-start;align-items:center}
+.bmi-formula-rows--stacked .bmi-formula-row>div{display:grid;gap:2px}
+.bmi-formula-row__badge{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line);font-size:15px;color:var(--ink)}
+.bmi-formula-row__code{font:400 15px/1.4 var(--f-body);color:var(--ink)}
+
+.bmi-sources{font-size:var(--fs-small);color:var(--muted)}
+.bmi-sources__title{font-weight:600;color:var(--ink);margin-bottom:10px}
+.bmi-sources__list{display:grid;gap:6px;margin:0 0 14px;padding:0;list-style:none;max-width:90ch}
+.bmi-sources__disclaimer{max-width:68ch}
+
+@media (max-width:960px){.bmi-calc-card--embed,.bmi-calc-card--page{grid-template-columns:1fr}.bmi-calc-card--page{grid-template-areas:"head" "form" "scale" "result" "stats";grid-template-rows:none}.bmi-tiers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){
+  .bmi-calc-card{padding:20px 18px;border-radius:24px}
+  .bmi-form__grid--quad,.bmi-calc-card--embed .bmi-form__grid--quad{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bmi-gender{justify-self:stretch}
+  .bmi-result{margin-inline:-6px}
+  .bmi-tiers,.bmi-formulas{grid-template-columns:1fr}
+  .bmi-field__select{font-size:15px;padding-left:12px;padding-right:34px;background-position:right 12px center}
+  .bmi-stat{padding-left:10px}
+  .bmi-formula-row{flex-wrap:wrap}
+}

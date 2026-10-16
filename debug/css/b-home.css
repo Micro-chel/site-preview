@@ -1,0 +1,496 @@
+/* Avelis «Кришталь» — home page, DA-3b: the client's story (approved mock-up v3, 13.10.2026) + every block of the old home.
+   One device leads the page: the route line. It draws on the first screen, fills while the five chapters pass,
+   forks in «pen or programme» and runs down the safety promises.
+   Rule kept everywhere: the illustrated heroine is never on one screen with a real quote or number.
+   Static order (no JS, reduced motion) is the default; html.is-live is set only by js/b-motion.js. */
+
+/* ---------- shared bits ---------- */
+.sig{font-size:var(--fs-small);color:var(--muted)}
+.sig b{font-weight:600;color:var(--ink)}
+/* generated scenes are marked honestly and quietly */
+
+/* one heading voice for every block below the story */
+.about__title,.advantages__title,.prices__title,.pen-vs-program__title,.gallery__title,.prep-cards__title,
+.safety__title,.faq__title,.blog__title,.reviews__title,.contacts__title{font-size:var(--fs-h2);font-weight:300;max-width:18ch}
+/* one rhythm: each block brings only its top space; ink blocks and the last one close themselves */
+.about,.advantages,.prices,.pen-vs-program,.gallery,.prep-cards,.safety,.faq,.cta-banner,.blog,.reviews,.contacts{padding:var(--section) 0 0}
+.safety,.contacts{padding-bottom:var(--section)}
+.safety{margin-top:var(--section)}
+
+/* ---------- the route rail (first screen and story share it) ---------- */
+.rail{position:relative;--p:0;padding-top:4px}
+.rail__stops{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:relative}
+.rail__stops::before,.rail__stops::after{content:"";position:absolute;left:10%;width:80%;top:9px;height:2px;border-radius:2px;background:var(--line)}
+.rail__stops::after{background:var(--ink);transform-origin:0 50%;transform:scaleX(var(--p));z-index:1}
+.rail__stop{position:relative;z-index:2;display:grid;gap:10px;justify-items:center;text-align:center;font-size:var(--fs-small);line-height:1.3;color:var(--muted);padding-inline:6px}
+.rail__stop a{color:inherit;text-decoration:none;display:inline-block;padding:2px 0}
+.rail__stop a:hover{color:var(--ink);text-decoration:underline}
+.rail__stop i{width:20px;height:20px;border-radius:50%;background:var(--frost);box-shadow:inset 0 0 0 2px var(--ink);transition:background .4s,transform var(--t-med) var(--ease-out)}
+.rail__stop.is-on{color:var(--ink)}
+.rail__stop.is-on i{background:var(--ink)}
+.rail__stop.is-here i{transform:scale(1.25);box-shadow:inset 0 0 0 2px var(--ink),0 0 0 7px rgba(11,52,70,.12)}
+.rail__tag{position:absolute;z-index:3;top:1px;left:calc(50% + 16px);padding:3px 8px;border-radius:var(--r-pill);background:var(--ice);color:var(--ink);font:600 11px/1.1 var(--f-body);font-style:normal;white-space:nowrap}
+.rail__doc{position:relative;margin-top:18px;display:flex;align-items:center;gap:12px;font-size:var(--fs-micro);color:var(--logo)}
+.rail__doc::after{content:"";flex:1;height:0;border-top:2px dashed rgba(12,88,129,.55)}
+.rail__doc b{font-weight:600;white-space:nowrap}
+/* endless loops run only while the page scrolls and the element is in view (b-motion.js sets the classes): at rest nothing repaints */
+html.is-live .rail__doc::after{animation:hm-dash 1.6s linear infinite paused;border-top:0;height:2px;background:repeating-linear-gradient(90deg,rgba(12,88,129,.55) 0 6px,transparent 6px 12px);background-size:12px 2px}
+@keyframes hm-dash{to{background-position:12px 0}}
+html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
+
+/* ---------- first screen ---------- */
+.hm-hero{position:relative;min-height:100svh;display:grid;grid-template-rows:1fr;padding:76px 0 clamp(24px,4vh,44px);overflow:hidden}
+.hm-hero__photo{position:absolute;inset:0 0 0 38%;z-index:0}
+.hm-hero__photo .scene-img{object-position:70% 30%;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%);mask-image:linear-gradient(90deg,transparent 0,#000 30%)}
+.hm-hero__wrap{position:relative;z-index:2;display:grid;grid-template-rows:1fr auto;gap:clamp(20px,3vh,36px)}
+.hm-hero__text{align-self:center;display:grid;gap:14px;max-width:560px;padding-top:clamp(20px,5vh,64px)}
+.promo__title{font-size:clamp(34px,3.9vw,60px);font-weight:300;letter-spacing:-.04em;line-height:1.04}
+.promo__lead{font-size:var(--fs-lead);color:var(--muted);max-width:38ch}
+.promo__tags{font-size:var(--fs-micro);color:var(--muted);letter-spacing:.01em}
+.promo__offer{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:4px}
+.promo__heading{font-family:var(--f-display);font-weight:300;font-size:clamp(17px,1.3vw,20px);letter-spacing:-.02em;line-height:1.2}
+.promo__heading strong{display:block;white-space:nowrap;font-weight:500;font-size:1.6em;letter-spacing:-.04em;line-height:1.05;margin-top:2px}
+.promo__badge{order:-1;flex:none;padding:6px 11px;border-radius:var(--r-pill);background:var(--ink);color:var(--white);font:600 13px/1 var(--f-body)}
+.promo__sub{font-size:var(--fs-small);color:var(--ink);font-weight:500}
+.promo__discount-note{font-size:var(--fs-micro);color:var(--muted)}
+.hm-hero__rail{padding:22px clamp(18px,2vw,28px) 18px;border-radius:24px}
+.hm-hero__photo .illu{top:88px;bottom:auto}
+@media (min-width:761px) and (max-height:920px){.promo__title{font-size:clamp(34px,min(3.9vw,6.2vh),60px)}.hm-hero__text{gap:10px;padding-top:clamp(8px,2vh,64px)}}
+@media (min-width:761px) and (max-height:800px){.promo__title{font-size:clamp(30px,5.1vh,60px)}.promo__lead{font-size:16px}.hm-hero .actions .btn{min-height:46px}.hm-hero__wrap{gap:14px}.hm-hero__rail{padding:14px 24px 12px}.hm-hero__rail .rail__doc{margin-top:10px}.promo__heading strong{font-size:1.45em}}
+
+/* ---------- the story: five stops ---------- */
+.hm-ch{position:relative}
+.hm-stop{position:relative;overflow:hidden}
+/* static order: the scene owns one screen; the chat is its own block below, never over her photo */
+.hm-stop .scene-img{height:92svh;bottom:auto}
+.hm-stop .illu{top:calc(92svh - 40px);bottom:auto}
+.hm-col{position:relative;z-index:3;width:min(440px,100% - 24px);margin-left:var(--gutter);display:grid;gap:12px;min-height:92svh;align-content:end;padding:96px 0 clamp(24px,4vw,56px)}
+.hm-col--r{margin-left:auto;margin-right:var(--gutter);width:min(372px,100% - 24px)}
+/* her face sits in the upper half of each scene: keep the chat more than a screen away from both neighbours */
+.hm-stop .hm-chat{margin:0 auto;padding:60svh 0 85svh}
+.hm-stop+.hm-stop{margin-top:2px}
+.hm-plate{padding:clamp(22px,2.4vw,32px);display:grid;gap:10px}
+.hm-plate__n{font-family:var(--f-display);font-weight:300;font-size:15px;color:var(--muted)}
+.hm-plate h2{font-size:var(--fs-h2);font-weight:300}
+.hm-plate h3{font-family:var(--f-body);font-weight:600;font-size:var(--fs-lead);letter-spacing:0;line-height:1.3}
+.hm-plate p{color:var(--muted)}
+.hm-pill{justify-self:start;padding:7px 14px;border-radius:var(--r-pill);background:var(--ink);color:var(--white)!important;font-size:var(--fs-small);font-weight:600;line-height:1.3}
+
+/* a real doctor: compact card, scene made from her own photo (consent 11.10) */
+.hm-doc{display:grid;grid-template-columns:104px 1fr;gap:14px;align-items:center;padding:8px 18px 8px 8px;border-radius:22px}
+.hm-doc__pic{aspect-ratio:1;border-radius:16px;overflow:hidden}
+.hm-doc__pic img{width:100%;height:100%;object-fit:cover;object-position:76% 40%}
+.hm-doc p{font-size:var(--fs-small);line-height:1.35}
+.hm-doc__name{display:block;font-weight:600}
+.hm-doc__role{display:block;color:var(--muted);font-size:var(--fs-micro)}
+.hm-doc__tag{display:block;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--logo)}
+
+/* chapter 2: Kyiv home visit leads; the thermobox (all Ukraine) is the smaller second path */
+.hm-ship{display:grid;grid-template-columns:84px 1fr;gap:14px;align-items:center;padding:8px 18px 8px 8px;border-radius:22px}
+.hm-ship__pic{aspect-ratio:1;border-radius:14px;overflow:hidden}
+.hm-ship__pic img{width:100%;height:100%;object-fit:cover;object-position:56% 72%;transform:scale(1.9);transform-origin:56% 78%}
+.hm-ship p{font-size:var(--fs-micro);line-height:1.4;color:var(--muted)}
+.hm-ship b{display:block;font-size:var(--fs-small);color:var(--ink);margin-bottom:2px}
+.scene-img--door{object-position:100% 40%}
+
+/* the conversation: Instagram messages to the clinic, names hidden */
+.hm-chat{position:relative;z-index:3;width:min(560px,100% - 2*var(--gutter));margin:24px var(--gutter) 0 auto;display:grid;gap:10px}
+.hm-chat__list{display:grid;gap:12px;padding:clamp(18px,2.2vw,28px);border-radius:32px}
+.hm-msg{max-width:min(44ch,90%);padding:13px 19px;border-radius:22px 22px 22px 6px;background:var(--white);font-size:clamp(15px,1.15vw,17px);line-height:1.45;box-shadow:0 18px 34px -30px rgba(11,52,70,.6)}
+.hm-msg.us{justify-self:end;border-radius:22px 22px 6px 22px;background:var(--logo);color:var(--white)}
+.hm-msg .who{display:block;margin-bottom:3px;font-size:12px;color:var(--muted)}
+.hm-msg.us .who{color:var(--muted-dark)}
+.hm-chat__cap{font-size:var(--fs-micro);color:var(--muted);padding-inline:8px}
+.hm-src{font:inherit;color:var(--logo);background:none;border:0;padding:6px 2px;margin-left:2px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.hm-src:hover{color:var(--ink)}
+
+/* result: real photos, no heroine on this screen */
+.hm-stop--result{background:var(--frost);padding:clamp(72px,9vw,120px) 0}
+.hm-res{position:relative;z-index:3;width:min(var(--wrap),100% - 2*var(--gutter));margin:0 auto;display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:center}
+.cmp{position:relative;height:min(56svh,560px);max-width:100%;aspect-ratio:var(--ar,380/599);border-radius:30px;overflow:hidden;background:var(--mist);touch-action:pan-y;box-shadow:0 40px 80px -48px rgba(11,52,70,.55);--x:50%}
+.cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;user-select:none;-webkit-user-drag:none}
+.cmp__after{clip-path:inset(0 0 0 var(--x))}
+.cmp__line{position:absolute;top:0;bottom:0;left:var(--x);width:0;z-index:2;pointer-events:none}
+.cmp__line::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:rgba(248,251,252,.9)}
+.cmp__knob{position:absolute;top:50%;left:0;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;display:grid;place-items:center;color:var(--ink)}
+.cmp__knob svg{width:24px;height:24px}
+.cmp__tag{position:absolute;top:14px;z-index:2;padding:6px 12px;border-radius:var(--r-pill);font-size:var(--fs-micro);background:rgba(248,251,252,.76);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.cmp__tag--b{left:14px}.cmp__tag--a{right:14px}
+.cmp input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;z-index:3}
+.cmp:has(input:focus-visible){outline:2px solid var(--logo);outline-offset:4px}
+.hm-fact{display:grid;gap:10px;justify-items:start}
+.hm-fact__n{font-family:var(--f-display);font-weight:300;font-size:15px;color:var(--muted)}
+.hm-fact__kg{font-family:var(--f-display);font-weight:300;font-size:clamp(56px,7vw,112px);line-height:.95;letter-spacing:-.05em;white-space:nowrap}
+.hm-fact__time{font-size:var(--fs-h3);font-family:var(--f-display);font-weight:300;letter-spacing:-.02em}
+.hm-pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.hm-pick button{min-height:44px;padding:0 16px;border-radius:var(--r-pill);border:1px solid var(--line);background:rgba(248,251,252,.6);font:500 14px var(--f-body);color:var(--ink);cursor:pointer;transition:background var(--t-fast),border-color var(--t-fast)}
+.hm-pick button:hover{border-color:var(--ink)}
+.hm-pick button[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.hm-fact .actions{margin-top:14px}
+
+.hm-rail2,.hm-frost{display:none}
+
+/* live mode: the five stops share one sticky stage */
+html.is-live .hm-ch{height:980vh}
+html.is-live .hm-stage{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--frost)}
+/* stops are transparent layers on the frost stage: a chapter's text can arrive before its photo */
+html.is-live .hm-stop{position:absolute;inset:0;min-height:0;margin:0;padding:0;display:block;background:none}
+html.is-live .hm-stop .scene-img{height:100%}
+html.is-live .hm-stop .illu{top:88px;bottom:auto}
+html.is-live .hm-col{position:absolute;left:0;bottom:calc(150px + 2vh);min-height:0;padding:0}
+html.is-live .hm-col--r{left:auto;right:0}
+html.is-live .hm-chat{position:absolute;right:0;top:76px;bottom:calc(150px + 2vh);margin:0 var(--gutter);padding:0;align-content:center}
+html.is-live .hm-res{position:absolute;left:50%;top:calc(50% - 60px);transform:translate(-50%,-50%)}
+html.is-live .hm-rail2{display:block;position:absolute;z-index:6;left:50%;bottom:clamp(14px,2.4vh,26px);transform:translateX(-50%);width:min(var(--wrap),100% - 2*var(--gutter));padding:18px 24px 14px;border-radius:24px}
+html.is-live .hm-frost{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
+
+/* ---------- about: what the clinic is + the two real doctors ---------- */
+.about__wrap{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"text docs" "facts docs";grid-template-rows:auto 1fr;gap:clamp(28px,4vw,56px) clamp(28px,5vw,80px);align-items:start}
+.about__text-block{grid-area:text}.about__card-part{grid-area:docs}.about-facts{grid-area:facts}
+.about__text-block{display:grid;gap:22px;align-content:start;padding-top:clamp(0px,3vw,40px)}
+.about__desc{font-size:clamp(19px,1.6vw,24px);line-height:1.45;max-width:36ch;color:var(--muted)}
+.about__desc strong{color:var(--ink);font-weight:600}
+.about__links{display:flex;flex-wrap:wrap;gap:8px 28px}
+.about__more{font-weight:600;font-size:var(--fs-small);color:var(--logo);text-decoration:underline;text-decoration-color:rgba(12,88,129,.35);padding:8px 0}
+.about__more:hover{color:var(--ink);text-decoration-color:currentColor}
+/* the four facts sit on the route: one line through four nodes */
+.about-facts{display:grid;align-self:start;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;position:relative;padding-top:clamp(8px,2vw,24px)}
+.about-facts::before{content:"";position:absolute;left:24px;right:calc(25% - 24px);top:calc(clamp(8px,2vw,24px) + 23px);height:2px;background:var(--line)}
+.about-facts__item{position:relative;display:grid;gap:14px;align-content:start}
+.about-facts__icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--white);color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.about-facts__title{display:block;font-family:var(--f-display);font-weight:400;font-size:clamp(16px,1.2vw,18px);letter-spacing:-.02em;line-height:1.2;margin-bottom:6px}
+.about-facts__text{display:block;color:var(--muted);font-size:var(--fs-small)}
+.about__card-part{display:grid;gap:18px}
+.about__title--card{font-size:var(--fs-h3);font-weight:300}
+.about-doctors{position:relative;display:grid;grid-template-columns:auto auto 1fr;grid-template-areas:"vp vp vp" "prev next dots";gap:16px 10px;align-items:center}
+.about-doctors__viewport{grid-area:vp;overflow:hidden;border-radius:30px}
+.about-doctors__track{display:flex;transition:transform .7s var(--ease-out)}
+.about-doctors__slide{flex:0 0 100%;position:relative}
+.about-doctors__arrow{width:48px;height:48px;border-radius:var(--r-control);border:1px solid var(--line);background:var(--white);display:grid;place-items:center;cursor:pointer;transition:background var(--t-fast),border-color var(--t-fast)}
+.about-doctors__arrow--prev{grid-area:prev}.about-doctors__arrow--next{grid-area:next}
+.about-doctors__arrow:hover{background:var(--ink);border-color:var(--ink)}
+.about-doctors__arrow-icon,.gallery__arrow-icon{width:10px;height:10px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateX(2px) rotate(45deg)}
+.about-doctors__arrow-icon--rev,.gallery__arrow-icon--rev{transform:translateX(-2px) rotate(-135deg)}
+.about-doctors__arrow:hover .about-doctors__arrow-icon,.gallery__arrow:hover .gallery__arrow-icon{color:var(--white)}
+.about-doctors__dots,.gallery__dots{grid-area:dots;display:flex;gap:6px;justify-content:flex-end}
+.about-doctors__dot,.gallery__dot{width:28px;height:24px;border:0;padding:0;background:none;cursor:pointer;position:relative}
+.about-doctors__dot::before,.gallery__dot::before{content:"";position:absolute;left:0;right:0;top:11px;height:2px;border-radius:2px;background:var(--silver);transition:background var(--t-fast)}
+.about-doctors__dot.is-active::before,.gallery__dot.is-active::before{background:var(--ink)}
+
+/* ---------- advantages (A3, 14.10): the numbers on a dark ink panel, the six points below as a ruled sheet ---------- */
+.advantages__panel{--pad:clamp(28px,5vw,72px);--rule:rgba(248,251,252,.16);display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"head cta" "stats stats";
+  gap:0 clamp(28px,6vw,96px);align-items:end;padding:clamp(40px,5vw,72px) var(--pad) 0;border-radius:36px;background:var(--ink);color:var(--white);overflow:hidden}
+.advantages__head{grid-area:head;display:grid;gap:12px}
+.advantages__eyebrow{order:2;font-size:var(--fs-lead);color:rgba(248,251,252,.74)}
+.advantages__cta{grid-area:cta}
+.advantages__stats{grid-area:stats;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:clamp(40px,5vw,64px) calc(-1 * var(--pad)) 0;border-top:1px solid var(--rule)}
+.advantages__stat{display:grid;align-content:start;gap:14px;padding:clamp(28px,3vw,40px) clamp(16px,2.4vw,36px) clamp(32px,3.4vw,48px);border-left:1px solid var(--rule)}
+.advantages__stat:first-child{border-left:0;padding-left:var(--pad)}
+.advantages__stat-value{font-family:var(--f-display);font-weight:300;font-size:clamp(40px,4.4vw,68px);letter-spacing:-.05em;line-height:1;white-space:nowrap}
+.advantages__stat-text{color:rgba(248,251,252,.74);font-size:var(--fs-small);max-width:24ch}
+/* each point is its own light card: hairline, a faint cold fall from near-white to a touch colder than the ground */
+.advantages__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.6vw,20px);margin-top:clamp(32px,4vw,56px)}
+
+/* ---------- prices: two lists, injections on light, pens on ink ---------- */
+.prices__list{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(14px,2vw,24px);align-items:stretch;margin-top:clamp(28px,4vw,52px)}
+.prices__box{border-radius:30px;padding:clamp(24px,3vw,44px);display:grid;align-content:start;gap:6px}
+.prices__box--inj{background:var(--white);box-shadow:inset 0 0 0 1px var(--line)}
+.prices__box--pens{background:var(--ink);color:var(--white)}
+.prices__subtitle{font-family:var(--f-body);font-weight:600;font-size:var(--fs-lead);letter-spacing:0;margin-bottom:10px}
+.prices__box--inj .prices__rows{display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(24px,3vw,48px);grid-auto-flow:column;grid-template-rows:repeat(5,auto)}
+.prices__row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
+.prices__box--pens .prices__row{border-bottom-color:var(--line-dark)}
+.prices__name,.prices__value{transition:transform var(--t-med) var(--ease-out),color var(--t-fast)}
+.prices__row:hover .prices__name{transform:translateX(6px);color:var(--ink)}
+.prices__row:hover .prices__value{transform:translateX(-6px)}
+.prices__box--pens .prices__row:hover .prices__name{color:var(--white)}
+.prices__name{color:var(--muted);font-size:var(--fs-body)}
+.prices__box--pens .prices__name{color:var(--muted-dark)}
+.prices__label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.prices__value{font-family:var(--f-display);font-weight:400;font-size:clamp(18px,1.5vw,22px);letter-spacing:-.03em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.prices__box--pens .prices__value{color:var(--white)}
+.prices__footnote{margin-top:18px;font-size:var(--fs-small);color:var(--muted);max-width:52ch}
+.prices__cta{margin-top:26px}
+.prices__cta .btn{background:var(--ice);color:var(--ink)}
+.prices__cta .btn:hover{background:var(--white)}
+.prices__box--pens :focus-visible{outline-color:var(--ice)}
+
+/* ---------- pen or programme: the route forks into two formats ---------- */
+.pen-vs-program__head{display:grid;gap:12px;justify-items:center;text-align:center}
+.pen-vs-program__title{margin-inline:auto}
+.pen-vs-program__eyebrow{order:2;font-size:var(--fs-lead);color:var(--muted)}
+.pen-vs-program__stage{position:relative;margin-top:clamp(20px,3vw,36px)}
+.fork{display:block;width:100%;height:clamp(56px,7vw,96px);overflow:visible}
+.fork__line{fill:none;stroke:var(--ink);stroke-width:2;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:var(--fork,0)}
+.fork__node{fill:var(--ink)}
+.pen-vs-program__grid{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(12px,2vw,24px);align-items:stretch}
+.pen-vs-program__card{padding:clamp(26px,3vw,44px);display:grid;align-content:start;gap:12px;border-radius:30px}
+.pen-vs-program__card+.pen-vs-program__or+.pen-vs-program__card{background:var(--ink);color:var(--white);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 30px 60px -40px rgba(11,52,70,.6)}
+.pen-vs-program__card-title{font-size:var(--fs-h3);font-weight:300}
+.pen-vs-program__card-sub{font-size:var(--fs-small);color:var(--muted)}
+.pen-vs-program__card-text{color:var(--muted)}
+.pen-vs-program__card-text strong{color:var(--ink)}
+.pen-vs-program__card-text s{opacity:.7}
+.pen-vs-program__or+.pen-vs-program__card .pen-vs-program__card-sub,.pen-vs-program__or+.pen-vs-program__card .pen-vs-program__card-text{color:var(--muted-dark)}
+.pen-vs-program__or+.pen-vs-program__card .pen-vs-program__card-text strong{color:var(--white)}
+.pen-vs-program__tag{justify-self:start;margin-top:8px;padding:8px 14px;border-radius:var(--r-pill);font-size:var(--fs-micro);font-weight:600;background:var(--mist)}
+.pen-vs-program__tag--save{background:var(--ice);color:var(--ink)}
+.pen-vs-program__or{align-self:center;font-family:var(--f-display);font-weight:300;font-size:var(--fs-lead);color:var(--muted)}
+.pen-vs-program__footer{position:relative;margin-top:clamp(16px,2vw,24px);padding:clamp(22px,2.6vw,32px);display:grid;grid-template-columns:1fr 1fr;gap:12px 48px;color:var(--muted)}
+.pen-vs-program__footer strong{color:var(--ink)}
+
+/* ---------- before / after gallery (real photos, lightbox) ---------- */
+.gallery__title{margin-bottom:clamp(24px,3vw,44px)}
+.gallery__slider{display:grid;grid-template-columns:auto auto 1fr;grid-template-areas:"vp vp vp" "prev next dots";gap:20px 10px;align-items:center}
+.gallery__viewport{grid-area:vp;overflow:hidden;margin-right:-16px}
+.gallery__track{display:flex;transition:transform .7s var(--ease-out)}
+.gallery__slide{flex:0 0 50%;padding-right:16px}
+.gallery__card{display:grid;gap:14px;width:100%;padding:0;border:0;background:none;text-align:left;cursor:zoom-in}
+.gallery__media{aspect-ratio:3/2;border-radius:26px;overflow:hidden;background:var(--mist);box-shadow:inset 0 0 0 1px var(--line)}
+.gallery__media img{width:100%;height:100%;object-fit:cover;transition:transform var(--t-slow) var(--ease-out)}
+.gallery__card:hover .gallery__media img{transform:scale(1.025)}
+.gallery__caption{font-family:var(--f-display);font-weight:300;font-size:clamp(17px,1.4vw,21px);letter-spacing:-.02em;padding-inline:4px}
+.gallery__arrow{width:48px;height:48px;border-radius:var(--r-control);border:1px solid var(--line);background:var(--white);display:grid;place-items:center;cursor:pointer;transition:background var(--t-fast),border-color var(--t-fast)}
+.gallery__arrow--prev{grid-area:prev}.gallery__arrow--next{grid-area:next}
+.gallery__arrow:hover{background:var(--ink);border-color:var(--ink)}
+
+/* ---------- three medicines on equal terms ---------- */
+
+/* ---------- safety: the promise, on ink; the route runs down the four promises ---------- */
+.safety{background:var(--ink);color:var(--white)}
+.safety__panel{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,6vw,96px);align-items:start;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;border-radius:0}
+.safety__panel::before{display:none}
+.safety__title{position:sticky;top:120px;font-size:clamp(32px,3.8vw,56px)}
+.safety__grid{position:relative;display:grid;gap:clamp(28px,4vw,48px);padding-left:44px;--p:1}
+.safety__grid::before,.safety__grid::after{content:"";position:absolute;left:9px;top:10px;bottom:10px;width:2px;border-radius:2px;background:var(--line-dark)}
+.safety__grid::after{background:var(--ice);transform-origin:50% 0;transform:scaleY(var(--p))}
+.safety__item{position:relative;display:grid;gap:8px}
+.safety__item::before{content:"";position:absolute;left:-44px;top:4px;width:20px;height:20px;border-radius:50%;background:var(--ink);box-shadow:inset 0 0 0 2px var(--ice);z-index:1}
+.safety__item-title{font-size:var(--fs-h3);font-weight:300}
+.safety__item-text{color:var(--muted-dark);max-width:52ch}
+.safety__note{grid-column:2;padding:18px 0 0 44px;color:var(--muted-dark);font-size:var(--fs-small)}
+.safety__note a{color:var(--ice)}
+.safety :focus-visible{outline-color:var(--ice)}
+
+/* ---------- FAQ (.faq__item/.faq__q/.faq__a feed the FAQ JSON-LD) ---------- */
+.faq__wrap{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(24px,5vw,80px);align-items:start}
+.faq__side{position:sticky;top:120px;display:grid;gap:24px;justify-items:start}
+
+/* ---------- CTA: the heroine at the mirror (illustration) beside the offer ---------- */
+.cta-banner__panel{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);border-radius:36px;overflow:hidden;background:var(--ink);color:var(--white);min-height:min(520px,70svh)}
+.cta-banner__copy{display:grid;gap:18px;align-content:center;justify-items:start;padding:clamp(28px,4vw,64px)}
+.cta-banner__copy h2{font-size:clamp(30px,3.4vw,50px);font-weight:300;line-height:1.1}
+.cta-banner__copy h2 strong{font-weight:500;color:var(--ice);white-space:nowrap}
+.cta-banner__sub{color:var(--muted-dark);max-width:34ch}
+.cta-banner__scene{position:relative;min-height:320px}
+.cta-banner__scene .scene-img{object-position:62% 35%}
+.cta-banner__scene::before{content:"";position:absolute;inset:0 auto 0 0;width:28%;z-index:1;background:linear-gradient(90deg,var(--ink),rgba(11,52,70,0))}
+.cta-banner :focus-visible{outline-color:var(--ice)}
+
+.blog__all{margin-top:28px}
+
+/* ---------- reviews: the real screenshots, framed like a phone screen ---------- */
+.reviews__title{margin-bottom:clamp(24px,3vw,44px)}
+
+/* ---------- contacts ---------- */
+.contacts__wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,64px);align-items:stretch}
+.contacts__info{display:grid;gap:12px;align-content:start;justify-items:start}
+.contacts__title{margin-bottom:12px}
+.contacts__brand{font-size:var(--fs-small);color:var(--muted)}
+.contacts__hours,.contacts__address{color:var(--muted)}
+.contacts__map{border-radius:32px;overflow:hidden;min-height:420px;background:var(--mist);box-shadow:inset 0 0 0 1px var(--line)}
+.contacts__map iframe{display:block;width:100%;height:100%;min-height:420px;border:0;filter:saturate(.55) contrast(1.03)}
+
+/* modal photo: the doctor's consultation scene; screenshot lightbox without gallery arrows */
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){
+  .prices__box--inj .prices__rows{grid-template-columns:1fr;grid-auto-flow:row;grid-template-rows:none}
+}
+@media (max-width:960px){
+  .hm-hero__photo{inset:0 0 0 20%}
+  .hm-res{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .hm-fact{justify-items:center}
+  .about__wrap{grid-template-areas:"text" "docs" "facts"}
+  .about__wrap,.advantages__panel,.prices__list,.safety__panel,.faq__wrap,.contacts__wrap,.cta-banner__panel{grid-template-columns:1fr}
+  .advantages__panel{grid-template-areas:"head" "cta" "stats"}
+  .advantages__cta{margin-top:24px}
+  .advantages__stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .advantages__stat:nth-child(odd){border-left:0;padding-left:var(--pad)}
+  .advantages__stat:nth-child(n+3){border-top:1px solid var(--rule)}
+  .advantages__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .about-facts{grid-template-columns:1fr 1fr;row-gap:32px}
+  .about-facts::before{display:none}
+  .about__card-part{max-width:460px}
+  .pen-vs-program__grid{grid-template-columns:1fr}
+  .pen-vs-program__or{justify-self:center}
+  .pen-vs-program__footer{grid-template-columns:1fr}
+  .fork{display:none}
+  .safety__title,.faq__side{position:static}
+  .safety__note{grid-column:auto}
+  .cta-banner__scene{min-height:300px;order:-1}
+  .cta-banner__scene::before{inset:auto 0 0;width:auto;height:40%;background:linear-gradient(0deg,var(--ink),rgba(11,52,70,0))}
+}
+@media (max-width:599px){
+  .gallery__slide{flex-basis:100%}
+}
+@media (max-width:760px){
+  /* no live blur on phones (see .glass in b-base.css) */
+  .illu,.cmp__tag,.about__card{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(244,248,250,.94)}
+  /* first screen: price and «Записатися» above the fold on 390×844 and 360×740 — the offer comes right after the title */
+  .hm-hero__photo{height:34svh}
+  .hm-hero__text{display:flex;flex-direction:column}
+  .promo__title{order:1}.promo__offer{order:2}.promo__sub{order:3}.hm-hero__text .actions{order:4}.promo__discount-note{order:5}.promo__lead{order:6}.promo__tags{order:7}
+  .promo__lead{font-size:16px}
+  .hm-hero .actions .btn{min-height:48px;padding:0 20px}
+  .promo__heading strong{font-size:1.45em}
+  .hm-hero{padding-top:64px}
+  .hm-hero__photo{position:relative;inset:auto;height:44svh;margin:0}
+  .hm-hero__photo .scene-img{-webkit-mask-image:linear-gradient(180deg,#000 70%,transparent);mask-image:linear-gradient(180deg,#000 70%,transparent);object-position:72% 30%}
+  .hm-hero{display:block}
+  .hm-hero__wrap{display:block}
+  .hm-hero__text{padding:0 0 20px;margin-top:-28px;gap:14px;position:relative}
+  .promo__title{font-size:clamp(27px,7.6vw,34px)}
+  .hm-hero__photo .illu{top:12px}
+  .rail__doc{margin-top:10px}
+  .rail__stops{padding-bottom:24px}
+  .rail__stop{font-size:13px;line-height:1.2;padding-inline:0;gap:0}
+  .rail__stop span{display:none;position:absolute;top:26px;white-space:nowrap;left:50%;transform:translateX(-50%)}
+  .rail__stop.is-here span{display:block}
+  .rail__stop:first-child span{left:0;transform:none}
+  .rail__stop:last-child span{left:auto;right:0;transform:none}
+  .rail__stop i{width:16px;height:16px}
+  .rail__stops::before,.rail__stops::after{top:7px}
+  .rail__tag{left:50%;top:-20px;transform:translateX(-50%);padding:2px 6px}
+  .rail{padding-top:20px}
+  .hm-col,.hm-col--r{width:auto;margin-inline:12px}
+  .hm-doc{grid-template-columns:72px 1fr;padding:6px 14px 6px 6px}
+  .hm-doc p{font-size:14px}
+  .hm-plate h2{font-size:30px}
+  .hm-chat,.hm-stop .hm-chat{width:auto;margin-inline:12px}
+  .hm-msg{font-size:15px;padding:11px 16px}
+  .cmp{height:auto;width:min(100%,340px);max-height:46svh}
+  .hm-fact__kg{font-size:clamp(48px,14vw,64px)}
+  .hm-fact__time{font-size:20px}
+  .hm-fact .actions{justify-content:center}
+  .scene-img--door{object-position:57% 40%}
+  .about-facts{grid-template-columns:1fr}
+  .about-facts__item{grid-template-columns:48px 1fr;align-items:start;gap:16px}
+  .advantages__grid{grid-template-columns:1fr;gap:12px}
+  /* the panel runs edge to edge on phones: two columns of big numbers on thin rules */
+  .advantages__panel{--pad:var(--gutter);margin-inline:calc(-1 * var(--gutter));padding-top:48px;border-radius:0}
+  .advantages__stat{padding:22px 14px 26px;gap:10px}
+  .advantages__stat-value{font-size:clamp(34px,10.4vw,52px)}
+  .advantages__stat-text{font-size:14px;line-height:1.4}
+  .safety__grid{padding-left:38px}
+  .safety__item::before{left:-38px}
+  .safety__note{padding-left:38px}
+  .contacts__map,.contacts__map iframe{min-height:300px}
+  .contacts__phone{font-size:clamp(26px,7.6vw,34px)}
+}
+
+/* where the heroine stands in each scene: keep her in frame on 390/360 (a full-height crop shows ~26% of the width);
+   used by the first screen and by the static order (no JS, reduced motion) */
+@media (max-width:760px){
+  .hm-hero__photo .scene-img{object-position:90% 28%}
+  #st-0 .scene-img{object-position:72% 40%}
+  #st-1 .scene-img{object-position:77% 40%}
+  #st-2 .scene-img{object-position:27% 40%}
+  #st-3 .scene-img{object-position:77% 40%}
+}
+
+/* ---------- phones (≤760): P1 — the story is one pinned screen, page scroll changes the chapters (14.10) ----------
+   A chapter fills the screen: its photo sharp, edge to edge; five stories bars on top (the current one fills with
+   scroll); the chapter's text on a dense matte sheet at the bottom (no live blur). A change: the sheet rides down,
+   the next photo fades in, the sheet comes back with the new chapter. No conversations on phones: they stay in the
+   desktop story. html.is-vert is set by js/b-motion.js (vertical()); the result follows as a normal block. */
+@media (max-width:760px){
+  .hm-stop .hm-chat{display:none}
+  html.is-vert .hm-ch{height:calc(100svh + var(--beats,10) * 42svh)}
+  html.is-vert .hm-stage{--hd:64px;--g:20px;position:sticky;top:0;height:100svh;overflow:hidden;background:var(--frost)}
+  html.is-vert .hm-stage .hm-stop{--sh:340px;position:absolute;inset:0;margin:0;padding:0;background:none;overflow:visible;pointer-events:none}
+  html.is-vert .hm-stage .hm-stop.is-on{z-index:2;pointer-events:auto}
+  html.vert-quiet .hm-stage *{transition:none!important}
+  /* the photo: above the sheet, its bottom 30px hide under the sheet's rounded top; the old one goes only once the new is in */
+  html.is-vert .hm-stage .hm-stop .scene-img{position:absolute;top:0;left:0;right:0;bottom:auto;width:100%;height:calc(100% - var(--sh) + 30px);
+    z-index:1;opacity:0;transition:opacity 0s linear .6s}
+  html.is-vert .hm-stage .hm-stop.is-on .scene-img{opacity:1;transition:opacity .4s ease .12s}
+  html.is-vert #st-0 .scene-img{object-position:86% 40%}
+  html.is-vert #st-1 .scene-img{object-position:52% 40%}
+  html.is-vert #st-2 .scene-img{object-position:26% 35%}
+  html.is-vert #st-3 .scene-img{object-position:76% 30%}
+  /* one honest mark for the whole screen, under the bars on the right */
+  html.is-vert .hm-stage .hm-stop .illu{display:none}
+  html.is-vert .hm-stage #st-0 .illu{display:block;top:calc(var(--hd) + 24px);right:16px;bottom:auto;left:auto;z-index:7}
+  /* the sheet: dense matte, rides down and comes back with the next chapter */
+  html.is-vert .hm-stage .hm-col,html.is-vert .hm-stage .hm-col--r{position:absolute;top:auto;left:0;right:0;bottom:0;width:auto;height:var(--sh);min-height:0;margin:0;
+    padding:12px var(--g) calc(20px + env(safe-area-inset-bottom,0px));display:block;z-index:3;background:rgba(244,248,250,.97);
+    border-radius:28px 28px 0 0;box-shadow:0 -18px 48px -30px rgba(11,52,70,.6);
+    transform:translateY(calc(100% + 40px));transition:transform .22s cubic-bezier(.5,0,.75,0)}
+  html.is-vert .hm-stage .hm-stop.is-on .hm-col{transform:none;transition:transform .38s var(--ease-out) .2s}
+  html.is-vert .hm-stage #st-0 .hm-col{translate:0 calc(-1 * var(--lift,0px))}
+  html.is-vert .hm-ch.is-entering .hm-rail2,html.is-vert .hm-ch.is-entering #st-0 .illu{opacity:0}
+  html.is-vert .hm-stage .hm-rail2,html.is-vert .hm-stage #st-0 .illu{transition:opacity .25s}
+  html.is-vert .hm-stage .hm-col::before{content:"";display:block;width:38px;height:5px;border-radius:5px;background:rgba(11,52,70,.2);margin:0 auto 14px}
+  html.is-vert .hm-stage .hm-col>.glass{background:none;box-shadow:none;border-radius:0;contain:none;isolation:auto;padding:0}
+  html.is-vert .hm-stage .hm-col>.glass::before{display:none}
+  /* the chapter's text */
+  html.is-vert .hm-stage .hm-plate{display:block}
+  html.is-vert .hm-stage .hm-plate__n{font-size:13px;line-height:1.2}
+  html.is-vert .hm-stage .hm-plate h2{font-size:clamp(26px,7.4vw,30px);line-height:1.08;margin-top:6px}
+  html.is-vert .hm-stage .hm-plate h3{font-size:17px;margin-top:12px}
+  html.is-vert .hm-stage .hm-plate p:not(.hm-plate__n):not(.hm-pill){font-size:16px;line-height:1.5;margin-top:4px}
+  html.is-vert .hm-stage .hm-pill{display:inline-block;margin-top:12px;padding:8px 14px;font-size:14px;font-weight:500}
+  /* the real doctor leads the sheet: a row above a hairline */
+  html.is-vert .hm-stage .hm-doc{display:flex;gap:14px;align-items:center;padding:0 0 14px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+  html.is-vert .hm-stage .hm-doc__pic{flex:none;width:96px;height:72px;aspect-ratio:auto;border-radius:12px}
+  html.is-vert .hm-stage .hm-doc p{display:grid;gap:2px;min-width:0;font-size:15px;line-height:1.3}
+  html.is-vert .hm-stage .hm-doc__role{font-size:14px}
+  html.is-vert .hm-stage .hm-doc__tag{margin:0;text-transform:uppercase;letter-spacing:.04em}
+  /* chapter 2: Kyiv home visit leads, the thermobox (all Ukraine) follows under a hairline */
+  html.is-vert .hm-stage .hm-ship{display:flex;gap:14px;align-items:center;padding:14px 0 0;margin-top:14px;border-top:1px solid var(--line)}
+  html.is-vert .hm-stage .hm-ship__pic{flex:none;width:84px;height:64px;aspect-ratio:auto;border-radius:12px}
+  html.is-vert .hm-stage .hm-ship p{display:grid;gap:2px;font-size:14px;line-height:1.4}
+  html.is-vert .hm-stage .hm-ship b{font-size:15px;margin:0}
+  /* stories bars: the five stops of the strip, the current one fills with the chapter's scroll */
+  html.is-vert .hm-stage .hm-rail2{display:block;position:absolute;top:calc(var(--hd) + 10px);left:var(--g);right:var(--g);bottom:auto;transform:none;width:auto;height:3px;
+    padding:0;z-index:6;background:none;border-radius:0;box-shadow:none;contain:none}
+  html.is-vert .hm-stage .hm-rail2::before{display:none}
+  html.is-vert .hm-rail2 .rail{padding:0}
+  html.is-vert .hm-rail2 .rail__stops{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:0;margin:0}
+  html.is-vert .hm-rail2 .rail__stops::before,html.is-vert .hm-rail2 .rail__stops::after,html.is-vert .hm-rail2 .rail__stop>*,html.is-vert .hm-rail2 .rail__doc{display:none}
+  html.is-vert .hm-rail2 .rail__stop{display:block;height:3px;padding:0;border-radius:3px;overflow:hidden;background:rgba(11,52,70,.2);box-shadow:0 0 0 1px rgba(248,251,252,.45)}
+  html.is-vert .hm-rail2 .rail__stop::after{content:"";position:absolute;inset:0;background:var(--ink);transform-origin:0 50%;transform:scaleX(var(--f,0))}
+  /* the photo stays sharp: no frost over the scenes on phones */
+  html.is-vert .hm-stage .hm-frost{display:none}
+  /* the story's own calls to action are on the first screen and in the result: the floating call steps aside meanwhile */
+  html.is-vert.in-story .fab-call{opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+  html.is-vert .fab-call{transition:opacity .3s}
+  /* the result after the story: before/after across the whole width, the facts below */
+  html.is-vert #st-4{position:relative;inset:auto;display:block;margin:0;padding:0 0 72px;background:var(--frost);overflow:visible;visibility:visible;opacity:1}
+  html.is-vert #st-4 .hm-res{position:relative;left:auto;top:auto;transform:none;width:100%;gap:18px;justify-items:stretch;text-align:left}
+  html.is-vert #st-4 .cmp{width:100%;height:min(70svh,640px);min-height:400px;max-height:none;aspect-ratio:auto;border-radius:0;box-shadow:none}
+  html.is-vert #st-4 .cmp img{object-position:50% 22%}
+  html.is-vert #st-4 .cmp input{pointer-events:none}
+  html.is-vert #st-4 .hm-fact{padding-inline:20px;justify-items:start}
+  html.is-vert #st-4 .hm-fact .actions{justify-content:flex-start}
+  html.is-vert #st-4 .hm-fact .btn--outline{display:inline-flex}
+  @media (max-height:700px){html.is-vert .hm-stage .hm-plate h2{font-size:24px}html.is-vert .hm-stage .hm-plate h3{margin-top:8px}}
+}
+@media (min-width:560px) and (max-width:760px){
+  html.is-vert .hm-stage{--g:32px}
+  html.is-vert .hm-stage .hm-plate h2{font-size:36px}
+  html.is-vert .hm-stage .hm-plate h3{font-size:20px}
+  html.is-vert .hm-stage .hm-plate p:not(.hm-plate__n):not(.hm-pill),html.is-vert .hm-stage .hm-ship p{font-size:18px}
+  html.is-vert .hm-stage .hm-ship b{font-size:18px}
+  html.is-vert .hm-stage .hm-ship__pic{width:112px;height:84px}
+  html.is-vert .hm-stage .hm-doc__pic{width:120px;height:90px}
+  html.is-vert #st-4 .hm-res{width:calc(100% - 64px);margin-top:40px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
+  html.is-vert #st-4 .cmp{border-radius:30px;min-height:0}
+  html.is-vert #st-4 .hm-fact{padding-inline:0}
+  .prep-card{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}
+  /* wide phones: big pictures below the story leave room for their words on the same screen */
+  .about__photo-wrap{aspect-ratio:4/3}
+  .cta-banner__scene{min-height:240px;max-height:240px}
+  .review-card{aspect-ratio:1/1}
+}

@@ -1,0 +1,68 @@
+<div class="modal" id="modal-booking" aria-hidden="true" role="dialog">
+  <div class="modal__overlay" data-close></div>
+  <div class="modal__dialog">
+    <button type="button" class="modal__close" data-close data-i18n-aria-label="a11y.close" aria-label="Закрити"><span></span><span></span></button>
+    <div class="modal__img">
+      <img src="/images/story-doc-dm-800.webp" width="800" height="447" alt="Дмитрук Валентина Ярославівна — лікар-ендокринолог Avelis Clinic" data-i18n-alt="seo.doctor_1_alt" loading="lazy" decoding="async">
+    </div>
+    <div class="modal__body">
+      <h3 data-i18n="modal.book_title">Записатися на консультацію</h3>
+      <p class="modal__sub" data-i18n="modal.book_sub">Залиште заявку, і ми передзвонимо вам протягом 5 хвилин</p>
+      <form class="form" id="form-booking" novalidate>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="form__row">
+          <span class="form__label" data-i18n="form.name">Ім'я</span>
+          <input type="text" name="name" class="form__input " autocomplete="name">
+        </label>
+        <label class="form__row">
+          <span class="form__label"><span class="form__req">*</span> <span data-i18n="form.phone">Телефон</span></span>
+          <input type="tel" name="phone" class="form__input " required autocomplete="tel">
+        </label>
+        <label class="form__check">
+          <input type="checkbox" name="consent" required>
+          <span class="form__check-box"></span>
+          <span data-i18n-html="form.consent"><span class="form__req">*</span> Я погоджуюсь на <a href="/polityka-konfidentsiinosti.html" target="_blank" rel="noopener">обробку персональних даних</a></span>
+        </label>
+        <button type="submit" class="btn btn--block" data-i18n="btn.book">Записатися</button>
+        <p class="form__note " data-i18n="form.note">Ні до чого не зобов'язує · Передзвонимо за 5 хв з 08:00 до 20:00</p>
+      </form>
+      <p class="form__ok" hidden data-i18n="form.ok">Дякуємо! Ми зв'яжемося з вами найближчим часом.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-question" aria-hidden="true" role="dialog">
+  <div class="modal__overlay" data-close></div>
+  <div class="modal__dialog">
+    <button type="button" class="modal__close" data-close data-i18n-aria-label="a11y.close" aria-label="Закрити"><span></span><span></span></button>
+    <div class="modal__img">
+      <img src="/images/story-doc-dm-800.webp" width="800" height="447" alt="Дмитрук Валентина Ярославівна — лікар-ендокринолог Avelis Clinic" data-i18n-alt="seo.doctor_1_alt" loading="lazy" decoding="async">
+    </div>
+    <div class="modal__body">
+      <h3 data-i18n="modal.question_title">Задати питання</h3>
+      <p class="modal__sub" data-i18n="modal.question_sub">і ми відповімо на ваше питання</p>
+      <form class="form" id="form-question" novalidate>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="form__row">
+          <span class="form__label" data-i18n="form.name">Ім'я</span>
+          <input type="text" name="name" class="form__input ">
+        </label>
+        <label class="form__row">
+          <span class="form__label"><span class="form__req">*</span> <span data-i18n="form.phone">Телефон</span></span>
+          <input type="tel" name="phone" class="form__input " required>
+        </label>
+        <label class="form__row">
+          <span class="form__label" data-i18n="form.message">Ваше питання</span>
+          <textarea name="question" class="form__input form__textarea " rows="5"></textarea>
+        </label>
+        <label class="form__check">
+          <input type="checkbox" name="consent" required>
+          <span class="form__check-box"></span>
+          <span data-i18n-html="form.consent"><span class="form__req">*</span> Я погоджуюсь на <a href="/polityka-konfidentsiinosti.html" target="_blank" rel="noopener">обробку персональних даних</a></span>
+        </label>
+        <button type="submit" class="btn btn--block" data-i18n="btn.send">Надіслати</button>
+      </form>
+      <p class="form__ok" hidden data-i18n="form.ok_question">Дякуємо! Ваше питання надіслано.</p>
+    </div>
+  </div>
+</div>
