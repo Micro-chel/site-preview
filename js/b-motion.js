@@ -35,7 +35,7 @@
         range.value = 50; setX(50);
       });
     });
-    // phones (live story): the line follows the finger; a vertical swipe over the photos still scrolls the page
+    // phones: the line follows the finger; a vertical swipe over the photos still scrolls the page
     // (.cmp is touch-action:pan-y, the invisible range takes no touches there — see b-home.css)
     var drag = null;
     var follow = function (e) {
@@ -43,7 +43,7 @@
       range.value = Math.round(v); setX(v.toFixed(1));
     };
     cmp.addEventListener('pointerdown', function (e) {
-      if (e.pointerType === 'mouse' || !doc.classList.contains('is-vert')) return;
+      if (e.pointerType === 'mouse' || !matchMedia('(max-width: 760px)').matches) return;
       drag = { x: e.clientX, y: e.clientY, on: false }; cmp.dataset.touched = '1';
     });
     cmp.addEventListener('pointermove', function (e) {
@@ -121,88 +121,9 @@
   gsap.to(st1, { p: 1, duration: 1.8, delay: .5, ease: 'expo.inOut', onUpdate: function () { r1.style.setProperty('--p', st1.p); } });
   gsap.from('.hm-hero .rail__doc', { clipPath: 'inset(0 100% 0 0)', duration: 1.8, delay: .9, ease: 'expo.inOut', clearProps: 'clipPath' });
 
-  // ---------- phones (≤760): P1 — the story is one pinned screen, page scroll changes the chapters (14.10) ----------
-  // A chapter fills the screen: its photo sharp edge to edge, five stories bars on top, its text on a dense matte sheet
-  // at the bottom. A change: the sheet rides down, the next photo fades in, the sheet comes back with the new chapter —
-  // CSS transitions on .is-on (b-home.css). The state is a pure function of the scroll position, so fast flicks and
-  // scrolling back land on the right chapter. No messages on phones: the conversations stay in the desktop story.
-  function vertical() {
-    doc.classList.add('is-vert', 'vert-quiet');
-    var stops = gsap.utils.toArray('#hm-stage .hm-stop:not(.hm-stop--result)'), N = stops.length;
-    var bars = gsap.utils.toArray('#rail2 .rail__stop');
-    var ch = document.getElementById('hm-ch'), res = document.getElementById('st-4');
-    // the result is not part of the pinned screen: it follows the story as its own block (the finger slider never fights the pin)
-    if (res) {
-      var home = [res.parentNode, res.nextSibling], box = document.createElement('section');
-      box.className = 'hm-after'; ch.after(box); box.appendChild(res);
-      undo.push(function () { home[0].insertBefore(res, home[1]); box.remove(); });
-    }
-    // beats per chapter: a plate reads in 2, with a doctor or the thermobox in 2.4; one beat is 42 --vh of scroll (b-home.css)
-    var from = [], len = [], T = 0;
-    stops.forEach(function (s, i) { from[i] = T; len[i] = s.querySelector('.hm-doc, .hm-ship') ? 2.4 : 2; T += len[i]; });
-    ch.style.setProperty('--beats', T.toFixed(2));
-    undo.push(function () { ch.style.removeProperty('--beats'); });
-
-    // the sheet is as tall as its chapter's text; the photo frame ends 30px under its rounded top
-    function measure() {
-      stops.forEach(function (s) {
-        var col = s.querySelector('.hm-col'); if (!col) return;
-        col.style.height = 'auto'; s.style.setProperty('--sh', Math.ceil(col.offsetHeight) + 'px'); col.style.height = '';
-      });
-    }
-    undo.push(function () { stops.forEach(function (s) { s.style.removeProperty('--sh'); s.classList.remove('is-on'); }); });
-    var here = -1;
-    function show(pos) {
-      var k = 0; for (var i = 0; i < N; i++) if (pos >= from[i]) k = i;
-      if (k !== here) { here = k; stops.forEach(function (s, i) { s.classList.toggle('is-on', i === k); }); }
-      bars.forEach(function (b, i) {
-        b.style.setProperty('--f', (i < k ? 1 : i > k ? 0 : Math.max(0, Math.min(1, (pos - from[i]) / len[i]))).toFixed(3));
-      });
-    }
-    undo.push(function () { bars.forEach(function (b) { b.style.removeProperty('--f'); }); });
-    measure(); show(0);
-    var st = ScrollTrigger.create({
-      trigger: ch, start: 'top top', end: 'bottom bottom',
-      onUpdate: function (self) { show(self.progress * T); },
-      onRefresh: function (self) { measure(); show(self.progress * T); }
-    });
-    // while the stage comes in from below, the first sheet waits at the bottom of the window (never a screen of bare photo):
-    // it rides in on the stage's top edge, then stays while the photo opens above it
-    var stage = document.getElementById('hm-stage');
-    function lift() {
-      var top = ch.getBoundingClientRect().top, room = stage.offsetHeight - (parseFloat(stops[0].style.getPropertyValue('--sh')) || 0);
-      var v = Math.max(0, Math.min(top, room));
-      ch.style.setProperty('--lift', v.toFixed(1) + 'px');
-      ch.classList.toggle('is-entering', room - v < 72);
-    }
-    ScrollTrigger.create({ trigger: ch, start: 'top bottom', end: 'top top', onUpdate: lift, onRefresh: lift, onLeave: lift, onLeaveBack: lift });
-    undo.push(function () { ch.style.removeProperty('--lift'); ch.classList.remove('is-entering'); });
-    // the floating call steps aside as soon as the sheet is in the window (it would cover the chapter's text)
-    ScrollTrigger.create({ trigger: ch, start: 'top 90%', end: 'bottom bottom', toggleClass: { targets: doc, className: 'in-story' } });
-    if (document.fonts) document.fonts.ready.then(function () { if (doc.classList.contains('is-vert')) { measure(); lift(); } });
-    // the first state appears in place, not with the change choreography
-    requestAnimationFrame(function () { requestAnimationFrame(function () { doc.classList.remove('vert-quiet'); }); });
-    undo.push(function () { doc.classList.remove('vert-quiet'); });
-
-    // the curtain opens once when the result comes in; after that it is the reader's
-    if (res && cmp) {
-      setX(100); range.value = 100;
-      ScrollTrigger.create({ trigger: cmp, start: 'top 75%', once: true, onEnter: function () {
-        var cur = { x: 100 };
-        gsap.to(cur, { x: 50, duration: 1.1, ease: 'power2.inOut', onUpdate: function () { if (!cmp.dataset.touched) { setX(cur.x); range.value = Math.round(cur.x); } } });
-      } });
-    }
-    // the first screen's stops jump into the story at their own chapter; the last one to the result
-    [].forEach.call(r1.querySelectorAll('a'), function (lnk, i) {
-      var go = function (e) {
-        e.preventDefault();
-        var y = i < N ? st.start + (from[i] + .05) / T * (st.end - st.start) + 2 : res.getBoundingClientRect().top + scrollY - 64;
-        scrollTo({ top: y, behavior: 'smooth' });
-      };
-      lnk.addEventListener('click', go);
-      undo.push(function () { lnk.removeEventListener('click', go); });
-    });
-  }
+  // ---------- phones (≤760): the story is a plain list of steps on the route line (16.10) ----------
+  // Nothing is pinned or driven by scroll there: every chapter's text is in the page, the first screen's stops are plain
+  // anchors and the result is a normal block (b-home.css). Only computers build the pinned story below.
 
   // horizontal extent of the heroine on screen for this crop (data-face is in image coordinates); returns the clip that keeps
   // only the half of the photo without her, plus where the illustration mark can sit in that half
@@ -346,7 +267,6 @@
     if (story) story.revert();             // every tween, ScrollTrigger and inline style GSAP set in this build
     story = null;
     while (undo.length) undo.pop()();
-    doc.classList.remove('is-vert', 'in-story');
     var r2 = document.getElementById('rail2'); if (r2) r2.style.removeProperty('--p');
     [].forEach.call(document.querySelectorAll('#rail2 .rail__stop'), function (d) { d.classList.remove('is-on', 'is-here'); });
     var cv = document.getElementById('hm-frost'); if (cv) cv.style.webkitMaskImage = cv.style.maskImage = '';
@@ -355,7 +275,7 @@
   }
   function build() {
     phone = mq.matches; builtW = innerWidth; buildId++;
-    story = gsap.context(function () { if (phone) vertical(); else pinned(); });
+    story = gsap.context(function () { if (!phone) pinned(); });
   }
   build();
   var rt = null;
