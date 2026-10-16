@@ -137,7 +137,7 @@
       box.className = 'hm-after'; ch.after(box); box.appendChild(res);
       undo.push(function () { home[0].insertBefore(res, home[1]); box.remove(); });
     }
-    // beats per chapter: a plate reads in 2, with a doctor or the thermobox in 2.4; one beat is 42svh of scroll
+    // beats per chapter: a plate reads in 2, with a doctor or the thermobox in 2.4; one beat is 42 --vh of scroll (b-home.css)
     var from = [], len = [], T = 0;
     stops.forEach(function (s, i) { from[i] = T; len[i] = s.querySelector('.hm-doc, .hm-ship') ? 2.4 : 2; T += len[i]; });
     ch.style.setProperty('--beats', T.toFixed(2));

@@ -146,7 +146,7 @@
 .pg-after{margin-top:clamp(24px,3vw,40px)}
 
 /* ---------- «Схуднення» and other long pages: heading beside its text, stacked panels ---------- */
-.pg-head__media--scene{aspect-ratio:4/5;max-height:min(680px,78svh);width:100%}
+.pg-head__media--scene{aspect-ratio:4/5;max-height:min(680px,calc(78 * var(--vh, 1svh)));width:100%}
 .pg-head__media--scene .scene-img{object-position:88% 30%}
 .pg-head__media .illu{right:auto;left:14px;bottom:14px}
 .pg-split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:20px clamp(28px,5vw,80px);align-items:start}

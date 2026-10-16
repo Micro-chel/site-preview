@@ -39,11 +39,11 @@ html.is-live .rail__doc::after{animation:hm-dash 1.6s linear infinite paused;bor
 html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
 
 /* ---------- first screen ---------- */
-.hm-hero{position:relative;min-height:100svh;display:grid;grid-template-rows:1fr;padding:76px 0 clamp(24px,4vh,44px);overflow:hidden}
+.hm-hero{position:relative;min-height:calc(100 * var(--vh, 1svh));display:grid;grid-template-rows:1fr;padding:76px 0 clamp(24px,calc(4 * var(--vh, 1svh)),44px);overflow:hidden}
 .hm-hero__photo{position:absolute;inset:0 0 0 38%;z-index:0}
 .hm-hero__photo .scene-img{object-position:70% 30%;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%);mask-image:linear-gradient(90deg,transparent 0,#000 30%)}
-.hm-hero__wrap{position:relative;z-index:2;display:grid;grid-template-rows:1fr auto;gap:clamp(20px,3vh,36px)}
-.hm-hero__text{align-self:center;display:grid;gap:14px;max-width:560px;padding-top:clamp(20px,5vh,64px)}
+.hm-hero__wrap{position:relative;z-index:2;display:grid;grid-template-rows:1fr auto;gap:clamp(20px,calc(3 * var(--vh, 1svh)),36px)}
+.hm-hero__text{align-self:center;display:grid;gap:14px;max-width:560px;padding-top:clamp(20px,calc(5 * var(--vh, 1svh)),64px)}
 .promo__title{font-size:clamp(34px,3.9vw,60px);font-weight:300;letter-spacing:-.04em;line-height:1.04}
 .promo__lead{font-size:var(--fs-lead);color:var(--muted);max-width:38ch}
 .promo__tags{font-size:var(--fs-micro);color:var(--muted);letter-spacing:.01em}
@@ -55,19 +55,19 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
 .promo__discount-note{font-size:var(--fs-micro);color:var(--muted)}
 .hm-hero__rail{padding:22px clamp(18px,2vw,28px) 18px;border-radius:24px}
 .hm-hero__photo .illu{top:88px;bottom:auto}
-@media (min-width:761px) and (max-height:920px){.promo__title{font-size:clamp(34px,min(3.9vw,6.2vh),60px)}.hm-hero__text{gap:10px;padding-top:clamp(8px,2vh,64px)}}
+@media (min-width:761px) and (max-height:920px){.promo__title{font-size:clamp(34px,min(3.9vw,6.2vh),60px)}.hm-hero__text{gap:10px;padding-top:clamp(8px,calc(2 * var(--vh, 1svh)),64px)}}
 @media (min-width:761px) and (max-height:800px){.promo__title{font-size:clamp(30px,5.1vh,60px)}.promo__lead{font-size:16px}.hm-hero .actions .btn{min-height:46px}.hm-hero__wrap{gap:14px}.hm-hero__rail{padding:14px 24px 12px}.hm-hero__rail .rail__doc{margin-top:10px}.promo__heading strong{font-size:1.45em}}
 
 /* ---------- the story: five stops ---------- */
 .hm-ch{position:relative}
 .hm-stop{position:relative;overflow:hidden}
 /* static order: the scene owns one screen; the chat is its own block below, never over her photo */
-.hm-stop .scene-img{height:92svh;bottom:auto}
-.hm-stop .illu{top:calc(92svh - 40px);bottom:auto}
-.hm-col{position:relative;z-index:3;width:min(440px,100% - 24px);margin-left:var(--gutter);display:grid;gap:12px;min-height:92svh;align-content:end;padding:96px 0 clamp(24px,4vw,56px)}
+.hm-stop .scene-img{height:calc(92 * var(--vh, 1svh));bottom:auto}
+.hm-stop .illu{top:calc(92 * var(--vh, 1svh) - 40px);bottom:auto}
+.hm-col{position:relative;z-index:3;width:min(440px,100% - 24px);margin-left:var(--gutter);display:grid;gap:12px;min-height:calc(92 * var(--vh, 1svh));align-content:end;padding:96px 0 clamp(24px,4vw,56px)}
 .hm-col--r{margin-left:auto;margin-right:var(--gutter);width:min(372px,100% - 24px)}
 /* her face sits in the upper half of each scene: keep the chat more than a screen away from both neighbours */
-.hm-stop .hm-chat{margin:0 auto;padding:60svh 0 85svh}
+.hm-stop .hm-chat{margin:0 auto;padding:calc(60 * var(--vh, 1svh)) 0 calc(85 * var(--vh, 1svh))}
 .hm-stop+.hm-stop{margin-top:2px}
 .hm-plate{padding:clamp(22px,2.4vw,32px);display:grid;gap:10px}
 .hm-plate__n{font-family:var(--f-display);font-weight:300;font-size:15px;color:var(--muted)}
@@ -107,7 +107,7 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
 /* result: real photos, no heroine on this screen */
 .hm-stop--result{background:var(--frost);padding:clamp(72px,9vw,120px) 0}
 .hm-res{position:relative;z-index:3;width:min(var(--wrap),100% - 2*var(--gutter));margin:0 auto;display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:center}
-.cmp{position:relative;height:min(56svh,560px);max-width:100%;aspect-ratio:var(--ar,380/599);border-radius:30px;overflow:hidden;background:var(--mist);touch-action:pan-y;box-shadow:0 40px 80px -48px rgba(11,52,70,.55);--x:50%}
+.cmp{position:relative;height:min(calc(56 * var(--vh, 1svh)),560px);max-width:100%;aspect-ratio:var(--ar,380/599);border-radius:30px;overflow:hidden;background:var(--mist);touch-action:pan-y;box-shadow:0 40px 80px -48px rgba(11,52,70,.55);--x:50%}
 .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;user-select:none;-webkit-user-drag:none}
 .cmp__after{clip-path:inset(0 0 0 var(--x))}
 .cmp__line{position:absolute;top:0;bottom:0;left:var(--x);width:0;z-index:2;pointer-events:none}
@@ -131,17 +131,17 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
 .hm-rail2,.hm-frost{display:none}
 
 /* live mode: the five stops share one sticky stage */
-html.is-live .hm-ch{height:980vh}
-html.is-live .hm-stage{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--frost)}
+html.is-live .hm-ch{height:calc(980 * var(--vh, 1svh))}
+html.is-live .hm-stage{position:sticky;top:0;height:calc(100 * var(--vh, 1svh));overflow:hidden;background:var(--frost)}
 /* stops are transparent layers on the frost stage: a chapter's text can arrive before its photo */
 html.is-live .hm-stop{position:absolute;inset:0;min-height:0;margin:0;padding:0;display:block;background:none}
 html.is-live .hm-stop .scene-img{height:100%}
 html.is-live .hm-stop .illu{top:88px;bottom:auto}
-html.is-live .hm-col{position:absolute;left:0;bottom:calc(150px + 2vh);min-height:0;padding:0}
+html.is-live .hm-col{position:absolute;left:0;bottom:calc(150px + 2 * var(--vh, 1svh));min-height:0;padding:0}
 html.is-live .hm-col--r{left:auto;right:0}
-html.is-live .hm-chat{position:absolute;right:0;top:76px;bottom:calc(150px + 2vh);margin:0 var(--gutter);padding:0;align-content:center}
+html.is-live .hm-chat{position:absolute;right:0;top:76px;bottom:calc(150px + 2 * var(--vh, 1svh));margin:0 var(--gutter);padding:0;align-content:center}
 html.is-live .hm-res{position:absolute;left:50%;top:calc(50% - 60px);transform:translate(-50%,-50%)}
-html.is-live .hm-rail2{display:block;position:absolute;z-index:6;left:50%;bottom:clamp(14px,2.4vh,26px);transform:translateX(-50%);width:min(var(--wrap),100% - 2*var(--gutter));padding:18px 24px 14px;border-radius:24px}
+html.is-live .hm-rail2{display:block;position:absolute;z-index:6;left:50%;bottom:clamp(14px,calc(2.4 * var(--vh, 1svh)),26px);transform:translateX(-50%);width:min(var(--wrap),100% - 2*var(--gutter));padding:18px 24px 14px;border-radius:24px}
 html.is-live .hm-frost{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
 
 /* ---------- about: what the clinic is + the two real doctors ---------- */
@@ -277,7 +277,7 @@ html.is-live .hm-frost{display:block;position:absolute;inset:0;width:100%;height
 .faq__side{position:sticky;top:120px;display:grid;gap:24px;justify-items:start}
 
 /* ---------- CTA: the heroine at the mirror (illustration) beside the offer ---------- */
-.cta-banner__panel{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);border-radius:36px;overflow:hidden;background:var(--ink);color:var(--white);min-height:min(520px,70svh)}
+.cta-banner__panel{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);border-radius:36px;overflow:hidden;background:var(--ink);color:var(--white);min-height:min(520px,calc(70 * var(--vh, 1svh)))}
 .cta-banner__copy{display:grid;gap:18px;align-content:center;justify-items:start;padding:clamp(28px,4vw,64px)}
 .cta-banner__copy h2{font-size:clamp(30px,3.4vw,50px);font-weight:300;line-height:1.1}
 .cta-banner__copy h2 strong{font-weight:500;color:var(--ice);white-space:nowrap}
@@ -338,14 +338,14 @@ html.is-live .hm-frost{display:block;position:absolute;inset:0;width:100%;height
   /* no live blur on phones (see .glass in b-base.css) */
   .illu,.cmp__tag,.about__card{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(244,248,250,.94)}
   /* first screen: price and «Записатися» above the fold on 390×844 and 360×740 — the offer comes right after the title */
-  .hm-hero__photo{height:34svh}
+  .hm-hero__photo{height:calc(34 * var(--vh, 1svh))}
   .hm-hero__text{display:flex;flex-direction:column}
   .promo__title{order:1}.promo__offer{order:2}.promo__sub{order:3}.hm-hero__text .actions{order:4}.promo__discount-note{order:5}.promo__lead{order:6}.promo__tags{order:7}
   .promo__lead{font-size:16px}
   .hm-hero .actions .btn{min-height:48px;padding:0 20px}
   .promo__heading strong{font-size:1.45em}
   .hm-hero{padding-top:64px}
-  .hm-hero__photo{position:relative;inset:auto;height:44svh;margin:0}
+  .hm-hero__photo{position:relative;inset:auto;height:calc(44 * var(--vh, 1svh));margin:0}
   .hm-hero__photo .scene-img{-webkit-mask-image:linear-gradient(180deg,#000 70%,transparent);mask-image:linear-gradient(180deg,#000 70%,transparent);object-position:72% 30%}
   .hm-hero{display:block}
   .hm-hero__wrap{display:block}
@@ -369,7 +369,7 @@ html.is-live .hm-frost{display:block;position:absolute;inset:0;width:100%;height
   .hm-plate h2{font-size:30px}
   .hm-chat,.hm-stop .hm-chat{width:auto;margin-inline:12px}
   .hm-msg{font-size:15px;padding:11px 16px}
-  .cmp{height:auto;width:min(100%,340px);max-height:46svh}
+  .cmp{height:auto;width:min(100%,340px);max-height:calc(46 * var(--vh, 1svh))}
   .hm-fact__kg{font-size:clamp(48px,14vw,64px)}
   .hm-fact__time{font-size:20px}
   .hm-fact .actions{justify-content:center}
@@ -406,8 +406,8 @@ html.is-live .hm-frost{display:block;position:absolute;inset:0;width:100%;height
    desktop story. html.is-vert is set by js/b-motion.js (vertical()); the result follows as a normal block. */
 @media (max-width:760px){
   .hm-stop .hm-chat{display:none}
-  html.is-vert .hm-ch{height:calc(100svh + var(--beats,10) * 42svh)}
-  html.is-vert .hm-stage{--hd:64px;--g:20px;position:sticky;top:0;height:100svh;overflow:hidden;background:var(--frost)}
+  html.is-vert .hm-ch{height:calc((100 + var(--beats,10) * 42) * var(--vh, 1svh))}
+  html.is-vert .hm-stage{--hd:64px;--g:20px;position:sticky;top:0;height:100dvh;overflow:hidden;background:var(--frost)}
   html.is-vert .hm-stage .hm-stop{--sh:340px;position:absolute;inset:0;margin:0;padding:0;background:none;overflow:visible;pointer-events:none}
   html.is-vert .hm-stage .hm-stop.is-on{z-index:2;pointer-events:auto}
   html.vert-quiet .hm-stage *{transition:none!important}
@@ -469,7 +469,7 @@ html.is-live .hm-frost{display:block;position:absolute;inset:0;width:100%;height
   /* the result after the story: before/after across the whole width, the facts below */
   html.is-vert #st-4{position:relative;inset:auto;display:block;margin:0;padding:0 0 72px;background:var(--frost);overflow:visible;visibility:visible;opacity:1}
   html.is-vert #st-4 .hm-res{position:relative;left:auto;top:auto;transform:none;width:100%;gap:18px;justify-items:stretch;text-align:left}
-  html.is-vert #st-4 .cmp{width:100%;height:min(70svh,640px);min-height:400px;max-height:none;aspect-ratio:auto;border-radius:0;box-shadow:none}
+  html.is-vert #st-4 .cmp{width:100%;height:min(calc(70 * var(--vh, 1svh)),640px);min-height:400px;max-height:none;aspect-ratio:auto;border-radius:0;box-shadow:none}
   html.is-vert #st-4 .cmp img{object-position:50% 22%}
   html.is-vert #st-4 .cmp input{pointer-events:none}
   html.is-vert #st-4 .hm-fact{padding-inline:20px;justify-items:start}
