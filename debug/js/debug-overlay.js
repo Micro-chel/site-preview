@@ -55,6 +55,26 @@
     box.style.cssText = 'position:fixed;left:6px;top:70px;z-index:2147483647;max-width:72vw;margin:0;padding:6px 8px;font:10px/1.35 ui-monospace,Menlo,monospace;color:#fff;background:rgba(0,0,0,.74);border-radius:8px;pointer-events:none;white-space:pre-wrap';
     document.body.appendChild(box);
     log('старт, ширина ' + innerWidth + ', высота ' + innerHeight);
+    // viewport units and the tall sections: if any of them changes while the toolbars slide, the page below jumps
+    var probes = {};
+    ['svh', 'lvh', 'dvh', 'vh'].forEach(function (u) {
+      var d = document.createElement('div');
+      d.style.cssText = 'position:absolute;left:-9999px;top:0;width:1px;height:100' + u + ';visibility:hidden;pointer-events:none';
+      document.body.appendChild(d); probes[u] = d;
+    });
+    function snap() {
+      var st = document.getElementById('hm-ch'), hero = document.querySelector('.hm-hero');
+      return { svh: probes.svh.offsetHeight, lvh: probes.lvh.offsetHeight, vh: probes.vh.offsetHeight,
+               'История': st ? st.offsetHeight : 0, '1-й экран': hero ? hero.offsetHeight : 0 };
+    }
+    var prev = snap();
+    log('100svh=' + prev.svh + ' 100lvh=' + prev.lvh + ' 100vh=' + prev.vh + ' dvh=' + probes.dvh.offsetHeight + ' История=' + prev['История']);
+    setInterval(function () {
+      var s = snap(), ch = [];
+      for (var k in s) if (s[k] !== prev[k]) ch.push(k + ' ' + prev[k] + '→' + s[k]);
+      if (ch.length) log('ВЫСОТА: ' + ch.join(', ') + ' (окно ' + innerHeight + ')');
+      prev = s;
+    }, 100);
     setInterval(function () { box.textContent = 'DEBUG · y=' + Math.round(scrollY) + ' · w=' + innerWidth + '\n' + lines.join('\n'); }, 300);
     // chapter changes in the home story (phone and desktop)
     var stops = document.querySelectorAll('#hm-stage .hm-stop'), names = ['Консультація', 'Біля дверей', 'Тиждень 1', 'Місяць', 'Результат'];
