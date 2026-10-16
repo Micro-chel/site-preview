@@ -1,5 +1,5 @@
 /* Avelis home — DA-3b: the client's story (approved mock-up v3) on the real page.
-   The route draws once on the first screen; in the story the same line fills with scroll, then forks in
+   In the story the route line fills with scroll, then forks in
    «pen or programme» and runs down the safety promises.
    In chapters with real messages the heroine's photo melts away first: her face and real words never share a screen.
    Reduced motion or no GSAP: every stop and chat is a plain block in reading order (the CSS default). */
@@ -115,11 +115,10 @@
     return frostInst;
   }
 
-  // ---------- first screen: the route draws, the photo settles ----------
-  var r1 = document.getElementById('rail1'), st1 = { p: 0 };
+  // ---------- first screen: the photo settles ----------
+  // (the route card under the first screen was removed 16.10 — the user; r1 stays optional for the chapter links below)
+  var r1 = document.getElementById('rail1');
   gsap.from('.hm-hero__photo .scene-img', phone ? { autoAlpha: 0, duration: .8, ease: 'expo.out' } : { scale: 1.06, filter: 'blur(10px)', duration: 1.6, ease: 'expo.out', clearProps: 'filter' });
-  gsap.to(st1, { p: 1, duration: 1.8, delay: .5, ease: 'expo.inOut', onUpdate: function () { r1.style.setProperty('--p', st1.p); } });
-  gsap.from('.hm-hero .rail__doc', { clipPath: 'inset(0 100% 0 0)', duration: 1.8, delay: .9, ease: 'expo.inOut', clearProps: 'clipPath' });
 
   // ---------- phones (≤760): the story is a plain list of steps on the route line (16.10) ----------
   // Nothing is pinned or driven by scroll there: every chapter's text is in the page, the first screen's stops are plain
@@ -256,7 +255,7 @@
     });
 
     // the first screen's stops jump into the story at their own slice
-    [].forEach.call(r1.querySelectorAll('a'), function (lnk, i) {
+    if (r1) [].forEach.call(r1.querySelectorAll('a'), function (lnk, i) {
       var go = function (e) { e.preventDefault(); scrollTo({ top: st.start + (A[i] + L[i] * .02) * (st.end - st.start) + 2, behavior: 'smooth' }); };
       lnk.addEventListener('click', go);
       undo.push(function () { lnk.removeEventListener('click', go); });
