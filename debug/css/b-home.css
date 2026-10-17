@@ -429,6 +429,12 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   #st-4{position:relative;overflow:visible;margin:0 0 0 38px;padding:0 0 72px;background:none}
   #st-4 .hm-res__h{display:block;font-size:clamp(20px,calc(8.6vw - 7px),28px);font-weight:300;line-height:1.08;margin-bottom:16px}
   #st-4 .hm-res{width:100%;gap:18px;justify-items:stretch;text-align:left}
+  /* the line goes on from the fifth node down the left edge of the before/after and ends at its bottom (17.10, the client):
+     one piece beside the heading, one beside the photos — same height formula as .cmp below, so it needs no script */
+  #st-4 .hm-res__h{position:relative}
+  #st-4 .hm-res__h::before,#st-4 .hm-res::before{content:"";position:absolute;left:-29px;width:2px;border-radius:2px;background:var(--line)}
+  #st-4 .hm-res__h::before{top:10px;bottom:-16px}
+  #st-4 .hm-res::before{top:0;height:max(360px,min(calc(56 * var(--vh, 1svh)),560px))}
   #st-4 .cmp{width:100%;height:min(calc(56 * var(--vh, 1svh)),560px);min-height:360px;max-height:none;aspect-ratio:auto;border-radius:20px;box-shadow:none}
   #st-4 .cmp img{object-position:50% 22%}
   html.js #st-4 .cmp input{pointer-events:none}
@@ -449,6 +455,8 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   .hm-stop .hm-plate h3{font-size:20px}
   .hm-stop .hm-plate p:not(.hm-plate__n):not(.hm-pill){font-size:18px}
   #st-4 .hm-res{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
+  #st-4 .cmp{align-self:start}
+  #st-4 .hm-res::before{height:min(calc(56 * var(--vh, 1svh)),560px)}
   #st-4 .hm-res__h{font-size:34px}
   #st-4 .cmp{border-radius:30px;min-height:0}
   .prep-card{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}
