@@ -117,6 +117,7 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
 .cmp__tag--b{left:14px}.cmp__tag--a{right:14px}
 .cmp input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;z-index:3}
 .cmp:has(input:focus-visible){outline:2px solid var(--logo);outline-offset:4px}
+.hm-res__h{display:none}
 .hm-fact{display:grid;gap:10px;justify-items:start}
 .hm-fact__n{font-family:var(--f-display);font-weight:300;font-size:15px;color:var(--muted)}
 .hm-fact__kg{font-family:var(--f-display);font-weight:300;font-size:clamp(56px,7vw,112px);line-height:.95;letter-spacing:-.05em;white-space:nowrap}
@@ -151,9 +152,8 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
 .about__text-block{display:grid;gap:22px;align-content:start;padding-top:clamp(0px,3vw,40px)}
 .about__desc{font-size:clamp(19px,1.6vw,24px);line-height:1.45;max-width:36ch;color:var(--muted)}
 .about__desc strong{color:var(--ink);font-weight:600}
-.about__links{display:flex;flex-wrap:wrap;gap:8px 28px}
-.about__more{font-weight:600;font-size:var(--fs-small);color:var(--logo);text-decoration:underline;text-decoration-color:rgba(12,88,129,.35);padding:8px 0}
-.about__more:hover{color:var(--ink);text-decoration-color:currentColor}
+/* the two ways on: buttons like the first screen's (17.10, the client) — the clinic filled, the programme outlined */
+.about__links{display:flex;flex-wrap:wrap;gap:12px}
 /* the four facts sit on the route: one line through four nodes */
 .about-facts{display:grid;align-self:start;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;position:relative;padding-top:clamp(8px,2vw,24px)}
 .about-facts::before{content:"";position:absolute;left:24px;right:calc(25% - 24px);top:calc(clamp(8px,2vw,24px) + 23px);height:2px;background:var(--line)}
@@ -386,9 +386,9 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
 
 /* ---------- phones (≤760): the story is a plain list of steps on the route line (16.10, the user: «something simple») ----------
    Every chapter's words are on the page at once: a small scene photo (64–96 px, 132 on wide phones) with the chapter's number and title beside it,
-   its text below, the real doctor or the thermobox as a mini card; one thin route line with a node per step (the line
-   of the safety list). Nothing is pinned and nothing changes with scroll — the same with JS, without JS and with
-   reduced motion. The result follows as its own block. No conversations on phones: they stay in the desktop story. */
+   its text below, the thermobox as a mini card (no doctors in the list since 17.10); one thin route line with a node per step
+   (the line of the safety list), which with motion fills as you read, as the safety one does. Nothing is pinned — the same
+   with JS, without JS and with reduced motion (there the line is simply whole). The result is the fifth step on the same line (17.10). No conversations on phones: they stay in the desktop story. */
 @media (max-width:760px){
   .hm-ch{padding-top:56px}
   .hm-stage{position:relative;padding:0 var(--gutter)}
@@ -396,10 +396,11 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   .hm-stop:not(.hm-stop--result){position:relative;overflow:visible;display:grid;grid-template-columns:var(--th) minmax(0,1fr);column-gap:16px;align-content:start;--th:clamp(64px,20vw,96px);
     margin:0 0 0 38px;padding:0 0 40px}
   .hm-stop+.hm-stop{margin-top:0}
-  /* the route: a node per step, the line runs from node to node and fades out into the result */
+  /* the route: a node per step, the line runs from node to node down to the result's node */
   .hm-stop:not(.hm-stop--result)::before{content:"";position:absolute;left:-29px;top:10px;bottom:-14px;width:2px;border-radius:2px;background:var(--line)}
-  #st-3::before{bottom:0;background:linear-gradient(180deg,var(--line) 60%,rgba(11,52,70,0))}
-  .hm-stop:not(.hm-stop--result)::after{content:"";position:absolute;left:-38px;top:4px;width:20px;height:20px;border-radius:50%;background:var(--ink);box-shadow:inset 0 0 0 2px var(--ice);z-index:1}
+  /* with motion the line fills down to the result as you read, like the safety list's (b-motion.js sets --rl and --p) */
+  .hm-stage::after{content:"";position:absolute;z-index:0;left:calc(var(--gutter) + 9px);top:14px;width:2px;height:var(--rl,0);border-radius:2px;background:var(--ink);transform-origin:50% 0;transform:scaleY(var(--p,1))}
+  .hm-stop::after{content:"";position:absolute;left:-38px;top:4px;width:20px;height:20px;border-radius:50%;background:var(--ink);box-shadow:inset 0 0 0 2px var(--ice);z-index:1}
   .hm-stop:not(.hm-stop--result) .scene-img{position:relative;inset:auto;grid-column:1;grid-row:1 / span 2;align-self:start;width:var(--th);height:var(--th);border-radius:16px}
   #st-0 .scene-img{object-position:80% 40%}
   #st-1 .scene-img{object-position:62% 40%}
@@ -418,20 +419,28 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   .hm-stop .hm-pill{margin-top:16px;padding:8px 14px;font-size:14px;font-weight:500}
   .hm-stop .hm-plate h3{margin-top:16px;font-size:17px}
   .hm-stop .hm-plate p:not(.hm-plate__n):not(.hm-pill){margin-top:4px;font-size:16px;line-height:1.5}
-  /* the real doctor and the thermobox: mini cards under the step's text */
-  .hm-stop .hm-doc,.hm-stop .hm-ship{order:1;margin-top:16px;justify-self:stretch}
+  /* no doctors in the phone list (17.10, the client): the thermobox stays as a mini card under the step's text */
+  .hm-stop .hm-doc{display:none}
+  .hm-stop .hm-ship{order:1;margin-top:16px;justify-self:stretch}
   .hm-ship{grid-template-columns:72px 1fr;padding:6px 14px 6px 6px}
   .hm-ship p{font-size:14px}
   .hm-ship b{font-size:15px}
-  /* the result after the steps: before/after across the whole width, the facts below */
-  #st-4{margin:0 calc(-1 * var(--gutter));padding:16px 0 72px}
+  /* the result is the fifth step on the line (17.10, the client): node, heading above the photos, everything in the step's column */
+  #st-4{position:relative;overflow:visible;margin:0 0 0 38px;padding:0 0 72px;background:none}
+  #st-4 .hm-res__h{display:block;font-size:clamp(20px,calc(8.6vw - 7px),28px);font-weight:300;line-height:1.08;margin-bottom:16px}
   #st-4 .hm-res{width:100%;gap:18px;justify-items:stretch;text-align:left}
-  #st-4 .cmp{width:100%;height:min(calc(56 * var(--vh, 1svh)),560px);min-height:360px;max-height:none;aspect-ratio:auto;border-radius:0;box-shadow:none}
+  #st-4 .cmp{width:100%;height:min(calc(56 * var(--vh, 1svh)),560px);min-height:360px;max-height:none;aspect-ratio:auto;border-radius:20px;box-shadow:none}
   #st-4 .cmp img{object-position:50% 22%}
   html.js #st-4 .cmp input{pointer-events:none}
-  #st-4 .hm-fact{padding-inline:20px;justify-items:start}
-  #st-4 .hm-fact .actions{justify-content:flex-start}
+  #st-4 .hm-fact{padding-inline:0;justify-items:start}
+  #st-4 .hm-fact__n{display:none}
+  #st-4 .hm-pick{gap:6px}
+  #st-4 .hm-pick button{padding:0 12px}
+  #st-4 .hm-fact .actions{justify-content:flex-start;justify-self:stretch;flex-direction:column}
+  #st-4 .hm-fact .actions .btn{width:100%;padding:0 16px;text-wrap:balance}
   #st-4 .hm-fact .btn--outline{display:inline-flex}
+  .about__links{flex-direction:column}
+  .about__links .btn{width:100%}
 }
 @media (min-width:560px) and (max-width:760px){
   .hm-stop:not(.hm-stop--result){--th:132px;column-gap:20px}
@@ -439,9 +448,9 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   .hm-stop .hm-plate h2{font-size:34px}
   .hm-stop .hm-plate h3{font-size:20px}
   .hm-stop .hm-plate p:not(.hm-plate__n):not(.hm-pill){font-size:18px}
-  #st-4 .hm-res{width:calc(100% - 64px);margin:24px auto 0;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
+  #st-4 .hm-res{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
+  #st-4 .hm-res__h{font-size:34px}
   #st-4 .cmp{border-radius:30px;min-height:0}
-  #st-4 .hm-fact{padding-inline:0}
   .prep-card{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}
   /* wide phones: big pictures below the story leave room for their words on the same screen */
   .about__photo-wrap{aspect-ratio:4/3}

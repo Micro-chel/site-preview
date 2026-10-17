@@ -310,6 +310,22 @@
       scrollTrigger: { trigger: sg, start: 'top 75%', end: 'bottom 55%', scrub: .5 } });
   }
 
+  // phones: the story's route line fills down to the result as you read — the safety list's fill (17.10, the client).
+  // The line is measured from the first node to the fifth; nothing is pinned. Reduced motion never gets here: the line stays whole.
+  var stage = document.getElementById('hm-stage'), st4 = document.getElementById('st-4');
+  if (stage && st4 && gsap.matchMedia) {
+    gsap.matchMedia().add('(max-width: 760px)', function () {
+      var measure = function () { stage.style.setProperty('--rl', st4.offsetTop + 'px'); };
+      measure();
+      var ro = window.ResizeObserver ? new ResizeObserver(measure) : null; if (ro) ro.observe(stage);
+      var rs = { p: 0 };
+      stage.style.setProperty('--p', 0);
+      gsap.to(rs, { p: 1, ease: 'none', onUpdate: function () { stage.style.setProperty('--p', rs.p.toFixed(3)); },
+        scrollTrigger: { trigger: stage, start: 'top 75%', endTrigger: st4, end: 'top 55%', scrub: .5 } });
+      return function () { if (ro) ro.disconnect(); stage.style.removeProperty('--rl'); stage.style.removeProperty('--p'); };
+    });
+  }
+
   // fonts and lazy scenes change heights below the story: keep the trigger ranges true
   addEventListener('load', function () { ScrollTrigger.refresh(); });
 })();

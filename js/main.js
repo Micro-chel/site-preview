@@ -580,11 +580,13 @@
     });
 
     lightbox.querySelector('.lightbox__nav--prev').addEventListener('click', function () {
+      if (!urls.length) return;
       lightboxIndex = (lightboxIndex - 1 + urls.length) % urls.length;
       lightboxImg.src = urls[lightboxIndex];
     });
 
     lightbox.querySelector('.lightbox__nav--next').addEventListener('click', function () {
+      if (!urls.length) return;
       lightboxIndex = (lightboxIndex + 1) % urls.length;
       lightboxImg.src = urls[lightboxIndex];
     });
