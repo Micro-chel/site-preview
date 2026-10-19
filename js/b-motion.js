@@ -28,7 +28,8 @@
         picks.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
         cmp.style.setProperty('--ar', b.dataset.w + '/' + b.dataset.h);
         imgB.width = imgA.width = +b.dataset.w; imgB.height = imgA.height = +b.dataset.h;
-        imgB.src = 'images/story-result-' + r + '-before-c.webp'; imgA.src = 'images/story-result-' + r + '-after-c.webp';
+        var root = window.AVELIS_ROOT || '/';
+        imgB.src = root + 'images/story-result-' + r + '-before-c.webp'; imgA.src = root + 'images/story-result-' + r + '-after-c.webp';
         imgB.alt = data[r + '-b'] || ''; imgA.alt = data[r + '-a'] || '';
         document.getElementById('hm-kg').textContent = data[r + '-kg'] || '';
         document.getElementById('hm-time').textContent = data[r + '-t'] || '';

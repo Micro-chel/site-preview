@@ -427,7 +427,10 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   .hm-ship b{font-size:15px}
   /* the result is the fifth step on the line (17.10, the client): node, heading above the photos, everything in the step's column */
   #st-4{position:relative;overflow:visible;margin:0 0 0 38px;padding:0 0 72px;background:none}
-  #st-4 .hm-res__h{display:block;font-size:clamp(20px,calc(8.6vw - 7px),28px);font-weight:300;line-height:1.08;margin-bottom:16px}
+  /* its heading reads like the other steps': the small «5 з 5» above, the big title below (19.10, the client) */
+  #st-4 .hm-res__h{display:block;margin-bottom:16px;padding-top:6px}
+  #st-4 .hm-res__n{font-family:var(--f-display);font-weight:300;font-size:13px;line-height:1.2;color:var(--muted)}
+  #st-4 .hm-res__h h2{margin-top:6px;font-size:clamp(20px,calc(8.6vw - 7px),28px);font-weight:300;line-height:1.08}
   #st-4 .hm-res{width:100%;gap:18px;justify-items:stretch;text-align:left}
   /* the line goes on from the fifth node down the left edge of the before/after and ends at its bottom (17.10, the client):
      one piece beside the heading, one beside the photos — same height formula as .cmp below, so it needs no script */
@@ -457,7 +460,7 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   #st-4 .hm-res{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
   #st-4 .cmp{align-self:start}
   #st-4 .hm-res::before{height:min(calc(56 * var(--vh, 1svh)),560px)}
-  #st-4 .hm-res__h{font-size:34px}
+  #st-4 .hm-res__h h2{font-size:34px}
   #st-4 .cmp{border-radius:30px;min-height:0}
   .prep-card{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}
   /* wide phones: big pictures below the story leave room for their words on the same screen */
