@@ -41,7 +41,8 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
 /* ---------- first screen ---------- */
 .hm-hero{position:relative;min-height:calc(100 * var(--vh, 1svh));display:grid;grid-template-rows:1fr;padding:76px 0 clamp(24px,calc(4 * var(--vh, 1svh)),44px);overflow:hidden}
 .hm-hero__photo{position:absolute;inset:0 0 0 38%;z-index:0}
-.hm-hero__photo .scene-img{object-position:70% 30%;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22%);mask-image:linear-gradient(90deg,transparent 0,#000 22%)}
+/* the photo melts into the frost on the left and at the bottom: no edge between the first screen and the story (p.1, 3b) */
+.hm-hero__photo .scene-img{object-position:70% 30%;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22%),linear-gradient(180deg,#000 72%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 22%),linear-gradient(180deg,#000 72%,transparent);mask-composite:intersect}
 .hm-hero__wrap{position:relative;z-index:2;display:grid;grid-template-rows:1fr}
 .hm-hero__text{align-self:center;display:grid;gap:14px;max-width:560px;padding-top:clamp(20px,calc(5 * var(--vh, 1svh)),64px)}
 .promo__title{font-size:clamp(34px,3.9vw,60px);font-weight:300;letter-spacing:-.04em;line-height:1.04}
@@ -87,7 +88,7 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
 /* chapter 2: Kyiv home visit leads; the thermobox (all Ukraine) is the smaller second path */
 .hm-ship{display:grid;grid-template-columns:84px 1fr;gap:14px;align-items:center;padding:8px 18px 8px 8px;border-radius:22px}
 .hm-ship__pic{aspect-ratio:1;border-radius:14px;overflow:hidden}
-.hm-ship__pic img{width:100%;height:100%;object-fit:cover;object-position:56% 72%;transform:scale(1.9);transform-origin:56% 78%}
+.hm-ship__pic img{width:100%;height:100%;object-fit:cover;object-position:7% 50%;transform:scale(1.8);transform-origin:50% 60%}
 .hm-ship p{font-size:var(--fs-micro);line-height:1.4;color:var(--muted)}
 .hm-ship b{display:block;font-size:var(--fs-small);color:var(--ink);margin-bottom:2px}
 .scene-img--door{object-position:100% 40%}
@@ -136,25 +137,44 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   html.is-live .hm-stage{position:sticky;top:0;height:calc(100 * var(--vh, 1svh));overflow:hidden;background:var(--frost)}
   /* stops are transparent layers on the frost stage: a chapter's text can arrive before its photo */
   html.is-live .hm-stop{position:absolute;inset:0;min-height:0;margin:0;padding:0;display:block;background:none}
-  html.is-live .hm-stop .scene-img{height:100%}
-  html.is-live .hm-stop .illu{top:88px;bottom:auto}
-  html.is-live .hm-col{position:absolute;left:0;bottom:calc(150px + 2 * var(--vh, 1svh));min-height:0;padding:0}
-  html.is-live .hm-col--r{left:auto;right:0}
-  html.is-live .hm-chat{position:absolute;right:0;top:76px;bottom:calc(150px + 2 * var(--vh, 1svh));margin:0 var(--gutter);padding:0;align-content:center}
-  html.is-live .hm-res{position:absolute;left:50%;top:calc(50% - 60px);transform:translate(-50%,-50%)}
+  /* the scene starts under the header (always solid): no head or face is ever behind it; the frame follows data-face (b-motion.js) */
+  html.is-live .hm-stop .scene-img{top:var(--hb,76px);height:calc(100% - var(--hb,76px))}
+  html.is-live .hm-stop .illu{top:calc(var(--hb,76px) + 12px);bottom:auto;left:14px;right:auto}
+  /* --hb / --rb (b-motion.js): the header's bottom + 12px and the rail's top − 20px, measured — cards, chat and result live between them */
+  html.is-live .hm-col{position:absolute;left:0;bottom:var(--rb,calc(150px + 2 * var(--vh, 1svh)));min-height:0;padding:0}
+  /* chapter 2 (client edits 3b): the cards stand left like every chapter, the heroine in the doorway stays clear on the right */
+  html.is-live .hm-col--r{margin-left:var(--gutter);margin-right:0}
+  html.is-live .hm-chat{position:absolute;right:0;top:calc(var(--hb,76px) + 12px);bottom:var(--rb,calc(150px + 2 * var(--vh, 1svh)));margin:0 var(--gutter);padding:0;align-content:center}
+  html.is-live .hm-res{position:absolute;left:50%;top:calc(var(--hb,76px) + 12px);bottom:var(--rb,150px);transform:translateX(-50%);align-content:center}
+  html.is-live .hm-res .cmp{height:min(calc(56 * var(--vh, 1svh)),560px,var(--av,560px))}
   html.is-live .hm-rail2{display:block;position:absolute;z-index:6;left:50%;bottom:clamp(14px,calc(2.4 * var(--vh, 1svh)),26px);transform:translateX(-50%);width:min(var(--wrap),100% - 2*var(--gutter));padding:18px 24px 14px;border-radius:24px}
   html.is-live .hm-frost{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
 }
 /* «Тиждень 1»: on narrow computer windows the plate would cover her hands with the pen — the photo slides right */
-@media (min-width:761px) and (max-width:1100px){html.is-live #st-2 .scene-img{object-position:20% 40%}html.is-live .hm-stop .illu{top:84px;left:14px;right:auto}}
+@media (min-width:761px) and (max-width:1100px){html.is-live #st-2 .scene-img{object-position:20% 40%}}
 /* narrow and low: the rail's labels wrap and the rail grows — the cards sit higher */
-@media (min-width:761px) and (max-width:1100px) and (max-height:760px){html.is-live .hm-stage .hm-col,html.is-live .hm-stage .hm-chat{bottom:calc(144px + 2 * var(--vh, 1svh))}}
+@media (min-width:761px) and (max-width:1100px) and (max-height:760px){html.is-live .hm-stage .hm-col,html.is-live .hm-stage .hm-chat{bottom:var(--rb,calc(144px + 2 * var(--vh, 1svh)))}}
+/* tablets 761–960: the cards (left) and the chat (right) each take half the width, like on low computer windows —
+   on top of each other they do not fit a 772-high window; both sit above the taller rail (its labels wrap here) */
+@media (min-width:761px) and (max-width:960px){
+  html.is-live .hm-stage .hm-col{width:calc(50% - var(--gutter) - 8px);bottom:var(--rb,calc(178px + 2 * var(--vh, 1svh)))}
+  html.is-live .hm-stage .hm-chat{width:calc(50% - var(--gutter) - 8px);top:calc(var(--hb,72px) + 12px);bottom:var(--rb,calc(178px + 2 * var(--vh, 1svh)))}
+  html.is-live .hm-chat__list{padding:14px 16px;gap:8px;border-radius:26px}
+  html.is-live .hm-msg{padding:9px 14px;font-size:14px;line-height:1.4}
+  html.is-live .hm-msg .who{margin-bottom:1px;font-size:11px}
+  /* the result: photo and numbers side by side as on computers — stacked, the month pills and buttons slid under the rail */
+  html.is-live .hm-res{grid-template-columns:auto minmax(0,1fr);justify-items:start;text-align:left;gap:32px}
+  html.is-live .hm-res .cmp{height:min(calc(100 * var(--vh, 1svh) - 330px),520px,var(--av,520px))}
+  html.is-live .hm-res .hm-fact{justify-items:start}
+}
 /* laptop windows ≤760 high (client edits 3, 20.10): every chapter fits whole below the header — tighter spacing,
    type and thumbnails; nothing is hidden */
 @media (min-width:761px) and (max-height:760px){
-  html.is-live .hm-col{bottom:calc(126px + 2 * var(--vh, 1svh));gap:8px}
-  html.is-live .hm-chat{top:84px;bottom:calc(126px + 2 * var(--vh, 1svh))}
-  html.is-live .hm-stop .illu{top:84px;left:14px;right:auto}
+  html.is-live .hm-col{bottom:var(--rb,calc(126px + 2 * var(--vh, 1svh)));gap:8px}
+  html.is-live .hm-chat{top:calc(var(--hb,76px) + 12px);bottom:var(--rb,calc(126px + 2 * var(--vh, 1svh)))}
+  html.is-live .hm-fact{gap:6px}
+  html.is-live .hm-fact__kg{font-size:clamp(48px,min(7vw,12vh),112px)}
+  html.is-live .hm-fact .actions{margin-top:6px}
   html.is-live .hm-rail2{padding:12px 20px 10px}
   html.is-live .hm-rail2 .rail__stop{gap:6px}
   html.is-live .hm-plate{padding:18px 22px;gap:6px}
@@ -167,6 +187,18 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   html.is-live .hm-chat__list{padding:14px 18px;gap:8px;border-radius:26px}
   html.is-live .hm-msg{padding:9px 15px;font-size:14px;line-height:1.4}
   html.is-live .hm-msg .who{margin-bottom:1px;font-size:11px}
+  /* chapter 2 is the tallest column (plate + thermobox): a wider card wraps the text into fewer lines */
+  html.is-live .hm-col--r{width:min(480px,100% - 24px)}
+}
+/* ≤640 high (1280×600 and the like): the band between header and rail is ~350px — the chat and the plates get tighter still */
+@media (min-width:961px) and (max-height:640px){
+  html.is-live .hm-plate{padding:14px 20px;gap:4px}
+  html.is-live .hm-plate p{font-size:14px;line-height:1.4}
+  html.is-live .hm-chat{gap:4px}
+  html.is-live .hm-chat__list{padding:10px 14px;gap:6px;border-radius:22px}
+  html.is-live .hm-msg{padding:7px 13px;font-size:13px;line-height:1.35;border-radius:18px 18px 18px 6px}
+  html.is-live .hm-msg.us{border-radius:18px 18px 6px 18px}
+  html.is-live .hm-chat__cap{line-height:1.3}
 }
 
 /* ---------- about: what the clinic is + the two real doctors ---------- */
@@ -352,15 +384,24 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   .cta-banner__scene{min-height:300px;order:-1}
   .cta-banner__scene::before{inset:auto 0 0;width:auto;height:40%;background:linear-gradient(0deg,var(--ink),rgba(11,52,70,0))}
 }
-/* first screen 761–1100 (story-hero3: the patient's pen at 40% of the photo, the doctor's face ends at 83%): the photo starts under the header,
+/* first screen 961–1100 (story-hero3: the patient's pen at 40% of the photo, the doctor's face ends at 83%): the photo starts under the header,
    its right edge is pinned so the doctor's face ends ~12px from the screen edge (30.1cqh = (1 − .832) × 2400/1340 × height), the title wraps narrower */
-@media (min-width:761px) and (max-width:1100px){
+@media (min-width:961px) and (max-width:1100px){
   .hm-hero__photo{top:72px;container-type:size}
-  .hm-hero__photo .scene-img{object-position:right calc(12px - 30.1cqh) top 0;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%);mask-image:linear-gradient(90deg,transparent 0,#000 14%)}
+  .hm-hero__photo .scene-img{object-position:right calc(12px - 30.1cqh) top 0;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%),linear-gradient(180deg,#000 72%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 14%),linear-gradient(180deg,#000 72%,transparent);mask-composite:intersect}
   .hm-hero__photo .illu{top:14px}
   .promo__title{max-width:9.4em}
 }
-@media (min-width:761px) and (max-width:960px){.hm-hero__photo{top:64px}}
+/* tablets 761–960: the first screen as on the phone — the whole photo on top (full width, 2400×1340), the text under it */
+@media (min-width:761px) and (max-width:960px){
+  .hm-hero{display:flex;flex-direction:column;padding-top:64px}
+  .hm-hero__wrap{display:flex;flex:1;align-items:center}
+  .hm-hero__photo{position:relative;inset:auto;height:calc(100vw * 1340 / 2400);margin:0}
+  .hm-hero__photo .scene-img{object-position:50% 0;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);mask-image:linear-gradient(180deg,#000 80%,transparent)}
+  .hm-hero__photo .illu{top:14px}
+  .hm-hero__text{padding:0 0 32px;margin-top:-12px;max-width:640px;position:relative}
+}
+@media (min-width:960px) and (max-width:960px){.hm-hero{padding-top:76px}}
 @media (max-width:599px){
   .gallery__slide{flex-basis:100%}
 }

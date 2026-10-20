@@ -135,13 +135,51 @@
 
     var r2 = document.getElementById('rail2'), dots = r2.querySelectorAll('.rail__stop');
     var cv = document.getElementById('hm-frost'), frost = getFrost(cv);
+
+    // the free band (client edits 3b): cards, chat and result keep 12px under the header and 22px over the rail on every window;
+    // both are measured, so wrapped rail labels or a taller header move the band with them
+    var stage = document.getElementById('hm-stage'), railBox = stage.querySelector('.hm-rail2'), head = document.querySelector('.site-header');
+    // each scene is framed by her face (data-face = face centre x, y and the top of her hair, shares of the picture):
+    // the hair stays in frame, the face sits in the upper third and clear of the cards on the left
+    var frame = function (img) {
+      var f = (img.dataset.face || '').split(',').map(Number); if (f.length < 3) return;
+      var W = img.clientWidth, H = img.clientHeight, iw = +img.getAttribute('width'), ih = +img.getAttribute('height');
+      if (!W || !H || !iw || !ih) return;
+      if (img.dataset.op0 === undefined) img.dataset.op0 = parseFloat(getComputedStyle(img).objectPosition) / 100;
+      var k = Math.max(W / iw, H / ih), dw = iw * k, dh = ih * k, ox = dw - W, oy = dh - H;
+      var py = .5, px = +img.dataset.op0, clamp = function (v) { return Math.max(0, Math.min(1, v)); };
+      if (oy > 1) py = clamp(Math.min((f[1] * dh - H * .34) / oy, (f[2] * dh - 8) / oy));
+      if (ox > 1) {
+        var col = img.parentNode.querySelector('.hm-col'), lo = (col ? col.getBoundingClientRect().right : 0) + 40, hi = W - 40, x = f[0] * dw - px * ox;
+        if (x < lo) px = (f[0] * dw - lo) / ox; else if (x > hi) px = (f[0] * dw - hi) / ox;
+        px = clamp(px);
+      }
+      img.style.objectPosition = (px * 100).toFixed(2) + '% ' + (py * 100).toFixed(2) + '%';
+      // the slow zoom of each chapter grows around her face, so it never pushes the head out of frame
+      img.style.transformOrigin = Math.round(f[0] * dw - px * ox) + 'px ' + Math.round(f[1] * dh - py * oy) + 'px';
+    };
+    var band = function () {
+      var hb = head ? Math.max(0, head.getBoundingClientRect().bottom) : 76, sh = stage.clientHeight, rb = sh - railBox.offsetTop + 22;
+      stage.style.setProperty('--hb', Math.round(hb) + 'px');
+      stage.style.setProperty('--rb', Math.round(rb) + 'px');
+      stage.style.setProperty('--av', Math.max(200, Math.round(sh - hb - 12 - rb)) + 'px');
+      [].forEach.call(stage.querySelectorAll('.hm-stop .scene-img'), frame);
+    };
+    band();
+    var bandRO = window.ResizeObserver ? new ResizeObserver(band) : null;
+    if (bandRO) { bandRO.observe(stage); bandRO.observe(railBox); if (head) bandRO.observe(head); }
+    undo.push(function () {
+      if (bandRO) bandRO.disconnect();
+      ['--hb', '--rb', '--av'].forEach(function (v) { stage.style.removeProperty(v); });
+      [].forEach.call(stage.querySelectorAll('.hm-stop .scene-img'), function (img) { img.style.objectPosition = img.style.transformOrigin = ''; delete img.dataset.op0; });
+    });
     if (frost) cv.style.webkitMaskImage = cv.style.maskImage = 'radial-gradient(ellipse 68% 74% at 50% 46%, transparent 46%, #000 92%)';
 
     stops.forEach(function (s, i) {
       gsap.set(s, { autoAlpha: i ? 0 : 1, zIndex: i + 1 });
-      var plate = s.querySelector('.hm-plate'); if (plate) gsap.set(plate, { autoAlpha: i ? 0 : 1, y: i ? 40 : 0 });
-      var ship = s.querySelector('.hm-ship'); if (ship) gsap.set(ship, { autoAlpha: 0, y: 40 });
-      var dc = s.querySelector('.hm-doc'); if (dc) gsap.set(dc, { autoAlpha: 0, y: 20 });
+      var plate = s.querySelector('.hm-plate'); if (plate) gsap.set(plate, { autoAlpha: i ? 0 : 1, y: i ? 12 : 0 });
+      var ship = s.querySelector('.hm-ship'); if (ship) gsap.set(ship, { autoAlpha: 0, y: 12 });
+      var dc = s.querySelector('.hm-doc'); if (dc) gsap.set(dc, { autoAlpha: 0, y: 10 });
       var chat = s.querySelector('.hm-chat'); if (chat) gsap.set(chat, { autoAlpha: 0 });
       // phones: a message not shown yet takes no room, so the panel grows message by message and is never an empty field
       gsap.set(s.querySelectorAll('.hm-msg'), phone ? { autoAlpha: 0, y: 18, display: 'none' } : { autoAlpha: 0, y: 18 });
@@ -188,7 +226,9 @@
         var nship = next.querySelector('.hm-ship');
         var clash = [plate, dc, chat].some(function (o) { return hit(o, np) || hit(o, nship); });
         var toRes = next.classList.contains('hm-stop--result'), turns = toRes || phone || clash;
-        var qo = turns ? q * .6 : q, ti = turns ? T + qo * .3 : T;
+        // plates that share one place (all chapters stand left since client edits 3b; tablets share one column): the new one starts
+        // only once the old is at 0 — never two texts at once
+        var qo = turns ? q * .6 : q, ti = turns ? T + qo * (clash && !phone ? 1 : .3) : T;
         inAt = chat ? T + qo : T;   // the photo starts the moment the messages reach 0
         // the old illustration mark leaves with the old text, so two marks never stack
         tl.to([plate, dc, chat, illu].filter(Boolean), { autoAlpha: 0, y: phone ? 0 : -16, duration: qo }, T)
@@ -225,6 +265,17 @@
         if (frost) { var q = Math.round(p * 600) / 600; if (q !== frostAt.last) { frostAt.last = q; frost.set(frostAt(q)).render(); } }
       }
     });
+
+    // from the first screen into the story (client edits 3b, p.1): the first scene opens as a rounded window on the frost and
+    // grows to the full screen exactly when the stage pins; the first-screen photo fades and sinks, the chapter's cards and
+    // the rail come in over the last third. Only before the pin — the chapters' timeline is untouched.
+    var s0 = stops[0], col0 = s0.querySelector('.hm-col'), heroPh = document.querySelector('.hm-hero__photo');
+    gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: '#hm-ch', start: 'top bottom', end: 'top top', scrub: .5 } })
+      .fromTo(stage, { clipPath: 'inset(7% 6% 0% 6% round 40px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', duration: 1 }, 0)
+      .fromTo(s0.querySelector('.scene-img'), { yPercent: -8 }, { yPercent: 0, duration: 1 }, 0)
+      .fromTo(heroPh, { autoAlpha: 1, yPercent: 0 }, { autoAlpha: .25, yPercent: 12, duration: 1 }, 0)
+      .fromTo([col0, railBox], { autoAlpha: 0 }, { autoAlpha: 1, duration: .26, ease: 'power2.out', stagger: .06 }, .7)
+      .fromTo([col0, r2], { y: 28 }, { y: 0, duration: .26, ease: 'power2.out', stagger: .06 }, .7);
 
     // the first screen's stops jump into the story at their own slice
     if (r1) [].forEach.call(r1.querySelectorAll('a'), function (lnk, i) {
