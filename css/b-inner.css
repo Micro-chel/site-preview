@@ -69,10 +69,10 @@
 .b-panel .btn--outline{background:transparent;color:var(--white);border-color:var(--line-dark)}
 .b-panel .btn--outline:hover{background:var(--white);color:var(--ink);border-color:var(--white)}
 .b-panel a:not(.btn){color:var(--ice)}
-.b-stats{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));margin:clamp(32px,4vw,56px) calc(-1 * clamp(32px,4.4vw,64px)) calc(-1 * clamp(32px,4.4vw,64px));border-top:1px solid var(--line-dark)}
+.b-stats{container-type:inline-size;display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));margin:clamp(32px,4vw,56px) calc(-1 * clamp(32px,4.4vw,64px)) calc(-1 * clamp(32px,4.4vw,64px));border-top:1px solid var(--line-dark)}
 .b-stat{display:grid;align-content:start;gap:14px;padding:clamp(28px,3vw,40px) clamp(20px,2.6vw,40px) clamp(32px,3.4vw,48px);border-left:1px solid var(--line-dark)}
 .b-stat:first-child{border-left:0;padding-left:clamp(32px,4.4vw,64px)}
-.b-stat__value{font-family:var(--f-display);font-weight:300;font-size:clamp(40px,4.4vw,68px);letter-spacing:-.05em;line-height:1;white-space:nowrap}
+.b-stat__value{font-family:var(--f-display);font-weight:300;font-size:min(clamp(40px,4.4vw,68px),calc(12.4cqi / var(--n,3)));letter-spacing:-.05em;line-height:1;white-space:nowrap}
 .b-stat p{color:var(--muted-dark);font-size:var(--fs-small);max-width:30ch}
 
 /* ---------- call to action on ink ---------- */
@@ -146,14 +146,21 @@
 .pg-after{margin-top:clamp(24px,3vw,40px)}
 
 /* ---------- «Схуднення» and other long pages: heading beside its text, stacked panels ---------- */
-.pg-head__media--scene{aspect-ratio:4/5;max-height:min(680px,calc(78 * var(--vh, 1svh)));width:100%}
-.pg-head__media--scene .scene-img{object-position:88% 30%}
+/* story-hero3 (patient + doctor): a square crop keeps the pen (40%) and both faces (to 83%) in the frame */
+.pg-head__media--scene{aspect-ratio:1/1;max-height:min(680px,calc(78 * var(--vh, 1svh)));width:100%}
+.pg-head__media--scene .scene-img{object-position:76% 30%}
 .pg-head__media .illu{right:auto;left:14px;bottom:14px}
 .pg-split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:20px clamp(28px,5vw,80px);align-items:start}
 .pg-split__body{display:grid;gap:16px;justify-items:start;font-size:var(--fs-lead);color:var(--muted);max-width:60ch}
 .pg-split__body .actions{margin-top:8px}
 .pg-stack{display:grid;gap:clamp(12px,1.6vw,20px)}
 .pg-steps{list-style:none;margin:0;padding:0}
+/* a text block set as a card of the «3 steps» kind (client edits 3): the card keeps the body's lead size */
+.pg-split__body.b-card{max-width:none}
+.pg-split__body.b-card p{font-size:var(--fs-lead)}
+/* one standalone remark under a row of cards («Важливо: …») */
+.pg-important{display:block;margin-top:clamp(12px,1.6vw,20px);color:var(--muted)}
+.pg-important strong{color:var(--ink)}
 .b-panel>.pg-h2{max-width:22ch}
 .b-card--ink{background:var(--ink);border-color:var(--ink);color:var(--white)}
 .b-card--ink li::before{background:var(--ice)}

@@ -95,12 +95,15 @@
 
   refreshModals();
 
-  function openModal(id) {
+  function openModal(id, formId) {
     var modal = modals[id];
     if (!modal) {
-      ensureModalsLoaded(function () { openModal(id); });
+      ensureModalsLoaded(function () { openModal(id, formId); });
       return;
     }
+    // a button may mark the request (data-form-id, e.g. «Купівля ручки»); sent instead of the form's id
+    if (formId) modal.dataset.formId = formId;
+    else delete modal.dataset.formId;
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -144,7 +147,7 @@
     var modalBtn = e.target.closest('[data-modal]');
     if (!modalBtn) return;
     e.preventDefault();
-    openModal(modalBtn.getAttribute('data-modal'));
+    openModal(modalBtn.getAttribute('data-modal'), modalBtn.getAttribute('data-form-id'));
   });
 
   document.addEventListener('click', function (e) {
@@ -180,7 +183,8 @@
       }
 
       var data = new FormData(form);
-      data.append('formId', id);
+      var modal = form.closest('.modal');
+      data.append('formId', (modal && modal.dataset.formId) || id);
       data.append('pageUrl', window.location.href);
 
       var submitBtn = form.querySelector('button[type="submit"]');

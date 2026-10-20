@@ -125,26 +125,6 @@
   // Nothing is pinned or driven by scroll there: every chapter's text is in the page, the first screen's stops are plain
   // anchors and the result is a normal block (b-home.css). Only computers build the pinned story below.
 
-  // horizontal extent of the heroine on screen for this crop (data-face is in image coordinates); returns the clip that keeps
-  // only the half of the photo without her, plus where the illustration mark can sit in that half
-  function faceFree(img) {
-    if (!img || !img.dataset.face) return null;
-    var f = img.dataset.face.split(',').map(Number), r = img.getBoundingClientRect();
-    // before the photo is decoded naturalWidth is 0, and img.width/height are the rendered box (not the photo):
-    // fall back to the width/height attributes, which carry the photo's own proportions
-    var ar = (img.naturalWidth / img.naturalHeight) || (+img.getAttribute('width') / +img.getAttribute('height')) || 2400 / 1340;
-    var Wr = Math.max(r.width, r.height * ar), px = (parseFloat(getComputedStyle(img).objectPosition) || 50) / 100;
-    var off = (Wr - r.width) * px, x0 = (f[0] * Wr - off) / r.width, x1 = (f[1] * Wr - off) / r.width;
-    if (x0 + x1 > 1) return { clip: 'inset(0% ' + Math.min(100, (1 - x0) * 100 + 3).toFixed(1) + '% 0% 0%)', illu: '14px', from: 0, to: x0 - .03 };
-    return { clip: 'inset(0% 0% 0% ' + Math.min(100, x1 * 100 + 3).toFixed(1) + '%)', illu: 'calc(' + (x1 * 100 + 4).toFixed(1) + '% + 0px)', from: x1 + .03, to: 1 };
-  }
-
-  // the crop is measured at build time; a photo still loading is checked again once decoded (and rebuilt if it differs)
-  function settle(img, clip) {
-    var id = buildId, again = function () { var z = buildId === id && faceFree(img); if (z && z.clip !== clip) rebuild(true); };
-    (img.decode ? img.decode() : Promise.reject()).then(again, function () { img.addEventListener('load', again, { once: true }); });
-  }
-
   function pinned() {
   // ---------- the story: each stop owns a slice proportional to data-w ----------
     var stops = gsap.utils.toArray('.hm-stop'), N = stops.length;
@@ -177,20 +157,11 @@
       if (img) tl.fromTo(img, { scale: 1.1 }, { scale: 1, duration: l * .45 }, a);
       if (dc) tl.to(dc, { autoAlpha: 1, y: 0, duration: l * .07, ease: 'power2.out' }, a + l * .08);
       if (chat) {
-        // the heroine leaves before anyone real speaks: her photo reaches 0 exactly when the panel and the first message arrive
-        var c = a + l * .36, out = l * (phone ? .035 : .05), z = faceFree(img);
-        if (z && !(img.complete && img.naturalWidth)) settle(img, z.clip);
-        if (z) {
-          // the photo keeps its face-free half (computed from data-face for this crop): the scene stays, her face goes
-          gsap.set(img, { clipPath: 'inset(0% 0% 0% 0%)' });
-          tl.to(img, { clipPath: z.clip, duration: out, ease: 'power2.inOut' }, c)
-            .to(illu, { autoAlpha: 0, duration: out * .3 }, c)
-            .set(illu, { left: z.illu, right: 'auto' }, c + out * .3)
-            .to(illu, { autoAlpha: 1, duration: out * .3 }, c + out * .7);
-        } else {
-          tl.to(img, phone ? { autoAlpha: 0, duration: out } : { autoAlpha: 0, filter: 'blur(20px)', duration: out }, c)
-            .to(illu, { autoAlpha: 0, duration: out * .6 }, c);
-        }
+        // the chat comes over the same photo: it softens (blur + a light veil) and stays whole, the heroine in frame
+        // (client edits 3, 20.10: no cropping to the half without her — that left an empty half of the screen)
+        var c = a + l * .36, out = l * (phone ? .035 : .05);
+        if (!phone) gsap.set(img, { filter: 'blur(0px) brightness(1) saturate(1)' });
+        tl.to(img, phone ? { autoAlpha: .35, duration: out } : { filter: 'blur(9px) brightness(1.06) saturate(.85)', duration: out, ease: 'power2.inOut' }, c);
         // phones: the plate makes room for the chat only once the first message is readable (no empty frame)
         if (phone) tl.to([plate, dc].filter(Boolean), { autoAlpha: 0, y: 20, duration: l * .02 }, c + out + l * .03);
         tl.to(chat, { autoAlpha: 1, duration: l * .03 }, c + out);
@@ -220,7 +191,7 @@
         var qo = turns ? q * .6 : q, ti = turns ? T + qo * .3 : T;
         inAt = chat ? T + qo : T;   // the photo starts the moment the messages reach 0
         // the old illustration mark leaves with the old text, so two marks never stack
-        tl.to([plate, dc, chat, chat ? null : illu].filter(Boolean), { autoAlpha: 0, y: phone ? 0 : -16, duration: qo }, T)
+        tl.to([plate, dc, chat, illu].filter(Boolean), { autoAlpha: 0, y: phone ? 0 : -16, duration: qo }, T)
           .set(next, { autoAlpha: 1 }, ti);
         // phones: plates are full width, so the new text comes in only after the old has gone (ti)
         var nps = [np, nship].filter(Boolean);

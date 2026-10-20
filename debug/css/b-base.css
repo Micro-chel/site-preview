@@ -64,7 +64,7 @@ ul{margin:0;padding:0;list-style:none}
 h1,h2,h3,h4{margin:0;font-family:var(--f-display);font-weight:400;letter-spacing:-.03em;line-height:1.08;text-wrap:balance}
 strong,b{font-weight:600}
 button{font:inherit;color:inherit}
-::selection{background:var(--ink);color:var(--white)}
+::selection{background:var(--ice);color:var(--ink)}
 :focus-visible{outline:2px solid var(--logo);outline-offset:3px;border-radius:6px}
 .wrap{width:min(var(--wrap),100% - 2*var(--gutter));margin-inline:auto}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -92,9 +92,10 @@ button{font:inherit;color:inherit}
 .b-arrow svg{width:18px;height:18px}
 
 /* ---------- header ---------- */
-.site-header{position:fixed;inset:0 0 auto;z-index:40;padding-top:env(safe-area-inset-top,0px);transition:background var(--t-med),box-shadow var(--t-med)}
-/* solid, not frosted: text that scrolls under the header must never show through it */
-.site-header.is-solid,body.nav-open .site-header{background:var(--frost);box-shadow:0 1px 0 var(--line)}
+.site-header{position:fixed;inset:0 0 auto;z-index:40;padding-top:env(safe-area-inset-top,0px);background:var(--white);box-shadow:0 1px 0 var(--line);transition:background var(--t-med),box-shadow var(--t-med)}
+/* its own light surface (a shade above the page) with a hairline, a soft shadow once the page scrolls under it (client edits 3);
+   solid, not frosted: text that scrolls under the header must never show through it */
+.site-header.is-solid,body.nav-open .site-header{background:var(--white);box-shadow:0 1px 0 var(--line),0 10px 24px -22px rgba(11,52,70,.45)}
 .header{position:relative}
 .site-header__row{display:flex;align-items:center;gap:clamp(14px,2vw,28px);height:76px}
 .site-header__logo{flex:none;display:block}
@@ -106,6 +107,8 @@ button{font:inherit;color:inherit}
 .site-nav__list{display:flex;align-items:center;gap:clamp(14px,1.6vw,24px)}
 .site-nav__link{font-size:15px;color:var(--muted);text-decoration:none;padding:8px 0;transition:color var(--t-fast);white-space:nowrap}
 .site-nav__link:hover,.site-nav__link.is-active,.site-nav__link[aria-current="page"]{color:var(--ink)}
+@media (min-width:960px){.site-nav__list>li>.site-nav__link[aria-current="page"],.site-nav__list>li>.site-nav__link.is-active{position:relative;font-weight:500}
+  .site-nav__list>li>.site-nav__link[aria-current="page"]::after,.site-nav__list>li>.site-nav__link.is-active::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:2px;border-radius:2px;background:var(--logo)}}
 .site-nav__item--has-sub{position:relative}
 .site-nav__sub{position:absolute;top:100%;left:-18px;min-width:260px;padding:10px;background:var(--white);border:1px solid var(--line);border-radius:var(--r-control);box-shadow:var(--shadow-lift);display:grid;gap:2px;opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity var(--t-fast),transform var(--t-med) var(--ease-out),visibility 0s linear var(--t-fast)}
 .site-nav__sub .site-nav__link{display:block;padding:10px 12px;border-radius:10px;color:var(--ink)}
@@ -178,7 +181,7 @@ html{scrollbar-color:var(--silver) var(--frost);accent-color:var(--ink);caret-co
 .glass>*{position:relative}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{background:rgba(248,251,252,.9)}}
 /* phones: the same matte plate without a live blur — cheaper on weak Android, nothing to shimmer */
-@media (max-width:760px){.glass{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(244,248,250,.93)}.site-header.is-solid,body.nav-open .site-header{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--frost)}}
+@media (max-width:760px){.glass{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(244,248,250,.93)}.site-header.is-solid,body.nav-open .site-header{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--white)}}
 
 /* ---------- modals ---------- */
 .modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:var(--s4);visibility:hidden;pointer-events:none}
