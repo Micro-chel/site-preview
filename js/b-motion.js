@@ -1,8 +1,8 @@
 /* Avelis home — DA-3b: the client's story (approved mock-up v3) on the real page.
    In the story the route line fills with scroll, then forks in
    «pen or programme» and runs down the safety promises.
-   In chapters with real messages the heroine's photo melts away first: her face and real words never share a screen.
-   Reduced motion or no GSAP: every stop and chat is a plain block in reading order (the CSS default). */
+   Scene photos stand still while the chapter is on screen (21.10b, the client: no chat, no blur, no zoom).
+   Reduced motion or no GSAP: every stop is a plain block in reading order (the CSS default). */
 (function () {
   'use strict';
   var doc = document.documentElement;
@@ -56,7 +56,7 @@
     cmp.addEventListener('pointercancel', function () { drag = null; });
   }
 
-  // ---------- original screenshots (chat «Оригінал», review cards): the site's lightbox, single image ----------
+  // ---------- original screenshots (review cards): the site's lightbox, single image ----------
   var lb = document.getElementById('lightbox');
   if (lb) {
     var lbImg = lb.querySelector('.lightbox__img'), opener = null;
@@ -68,12 +68,6 @@
       document.body.style.overflow = 'hidden';
       var x = lb.querySelector('.lightbox__close'); if (x) x.focus();
     };
-    [].forEach.call(document.querySelectorAll('.hm-src'), function (b) {
-      b.addEventListener('click', function () {
-        var same = document.querySelector('.review-card__img[src="' + b.dataset.src.replace('-900.', '-480.') + '"]');
-        openSingle(b.dataset.src, same ? same.alt : '', b);
-      });
-    });
     // a real review is never left cut mid-sentence: the card opens the whole screenshot
     [].forEach.call(document.querySelectorAll('.review-card'), function (card) {
       var img = card.querySelector('.review-card__img'); if (!img) return;
@@ -130,21 +124,26 @@
     var stops = gsap.utils.toArray('.hm-stop'), N = stops.length;
     var W = stops.map(function (s) { return +s.dataset.w || 1; });
     var T = W.reduce(function (a, b) { return a + b; }, 0);
+    // timings in data-w units (the story's height in b-home.css keeps one unit = 880/10.2 screens): the hand-overs, the doctor
+    // card and the result keep the pace they had before the chats left (21.10b), on a shorter story
+    var u = function (x) { return x / T; };
     var A = [], L = [], acc = 0;
     W.forEach(function (w) { A.push(acc / T); L.push(w / T); acc += w; });
 
     var r2 = document.getElementById('rail2'), dots = r2.querySelectorAll('.rail__stop');
     var cv = document.getElementById('hm-frost'), frost = getFrost(cv);
 
-    // the free band (client edits 3b): cards, chat and result keep 12px under the header and 22px over the rail on every window;
+    // the free band (client edits 3b): cards and result keep 12px under the header and 22px over the rail on every window;
     // both are measured, so wrapped rail labels or a taller header move the band with them
     var stage = document.getElementById('hm-stage'), railBox = stage.querySelector('.hm-rail2'), head = document.querySelector('.site-header');
     // each scene is framed by what it is about (21.10, Windows laptops 1280×585: «Тиждень 1» showed her face, the pen in her hands
     // went under the rail). data-subject = face + action (x1,y1,x2,y2, shares of the picture): with the chapter's slow zoom at its
-    // largest it lies whole in the free band — under the header, over the rail, clear of the cards (right of them or above them,
+    // largest (if on) it lies whole in the free band — under the header, over the rail, clear of the cards (right of them or above them,
     // whichever lets it be bigger). The picture covers the stage when that allows; otherwise it steps back (smaller, more of the
     // photo seen) and its edges inside the stage melt into the frost. data-face keeps the face high and the hair in frame.
-    var ZOOM = 1.1, PAD = 10;
+    // ZOOM_ON: the chapters' slow zoom from the subject (1.1 → 1). Off since 21.10b (the client: scene photos stand still);
+    // true brings it back, the framing makes room for it
+    var ZOOM_ON = false, ZOOM = ZOOM_ON ? 1.1 : 1, PAD = 10;
     var frame = function (img) {
       var sb = (img.dataset.subject || '').split(',').map(Number), f = (img.dataset.face || '').split(',').map(Number);
       var box = img.offsetParent, iw = +img.getAttribute('width'), ih = +img.getAttribute('height');
@@ -215,9 +214,6 @@
       var plate = s.querySelector('.hm-plate'); if (plate) gsap.set(plate, { autoAlpha: i ? 0 : 1, y: i ? 12 : 0 });
       var ship = s.querySelector('.hm-ship'); if (ship) gsap.set(ship, { autoAlpha: 0, y: 12 });
       var dc = s.querySelector('.hm-doc'); if (dc) gsap.set(dc, { autoAlpha: 0, y: 10 });
-      var chat = s.querySelector('.hm-chat'); if (chat) gsap.set(chat, { autoAlpha: 0 });
-      // phones: a message not shown yet takes no room, so the panel grows message by message and is never an empty field
-      gsap.set(s.querySelectorAll('.hm-msg'), phone ? { autoAlpha: 0, y: 18, display: 'none' } : { autoAlpha: 0, y: 18 });
     });
     gsap.set('.hm-fact > *:not([hidden])', { autoAlpha: 0, y: 24 });
 
@@ -226,56 +222,39 @@
     stops.forEach(function (s, i) {
       var a = A[i], l = L[i];
       var img = s.querySelector('.scene-img'), illu = s.querySelector('.illu');
-      var plate = s.querySelector('.hm-plate'), dc = s.querySelector('.hm-doc'), chat = s.querySelector('.hm-chat');
+      var plate = s.querySelector('.hm-plate'), dc = s.querySelector('.hm-doc');
       var veil = s.querySelector('.scene-veil');
-      if (img) tl.fromTo([img, veil].filter(Boolean), { scale: 1.1 }, { scale: 1, duration: l * .45 }, a);
-      if (dc) tl.to(dc, { autoAlpha: 1, y: 0, duration: l * .07, ease: 'power2.out' }, a + l * .08);
-      if (chat) {
-        // the chat comes over the same photo: it softens (blur + a light veil) and stays whole, the heroine in frame
-        // (client edits 3, 20.10: no cropping to the half without her — that left an empty half of the screen)
-        var c = a + l * .36, out = l * (phone ? .035 : .05);
-        if (!phone) gsap.set(img, { filter: 'blur(0px) brightness(1) saturate(1)' });
-        tl.to(img, phone ? { autoAlpha: .35, duration: out } : { filter: 'blur(9px) brightness(1.06) saturate(.85)', duration: out, ease: 'power2.inOut' }, c);
-        // phones: the plate makes room for the chat only once the first message is readable (no empty frame)
-        if (phone) tl.to([plate, dc].filter(Boolean), { autoAlpha: 0, y: 20, duration: l * .02 }, c + out + l * .03);
-        tl.to(chat, { autoAlpha: 1, duration: l * .03 }, c + out);
-        // messages follow each other closely, so the panel is never a big empty field
-        [].forEach.call(s.querySelectorAll('.hm-msg'), function (m, k) {
-          var at0 = c + out + l * k * .035;
-          if (phone) tl.set(m, { display: 'block' }, at0);
-          tl.to(m, { autoAlpha: 1, y: 0, duration: l * .03, ease: 'power2.out' }, at0);
-        });
-      }
+      if (img && ZOOM_ON) tl.fromTo([img, veil].filter(Boolean), { scale: ZOOM }, { scale: 1, duration: l * .45 }, a);
+      if (dc) tl.to(dc, { autoAlpha: 1, y: 0, duration: u(.161), ease: 'power2.out' }, a + u(.184));
       var res = s.classList.contains('hm-stop--result');
       if (res) {
         tl.to(curtain, { x: 50, duration: l * .4, ease: 'power2.inOut', onUpdate: function () { setX(curtain.x); range.value = Math.round(curtain.x); } }, a + l * .05);
         setX(100);
       }
       if (i < N - 1) {
-        // hand-over without an empty frame: the next chapter's text arrives while the old text leaves (different places on screen);
-        // after a chapter with real messages the next scene photo (her face) starts only once the messages are at 0.
-        var next = stops[i + 1], T = a + l - .03, q = .012;
+        // hand-over without an empty frame: the next chapter's text arrives while the old text leaves (different places on screen)
+        var next = stops[i + 1], T = a + l - u(.306), q = u(.1224);
         var np = next.querySelector('.hm-plate'), ni = next.querySelector('.scene-img'), inAt;
-        // the result's numbers sit where the last chat was: the chat leaves first, the numbers follow at once
         // where the old text and the new one share screen space, they take turns instead of crossing
         var hit = function (x, y) { if (!x || !y) return false; var a1 = x.getBoundingClientRect(), b1 = y.getBoundingClientRect(); return a1.left < b1.right && b1.left < a1.right && a1.top < b1.bottom && b1.top < a1.bottom; };
         var nship = next.querySelector('.hm-ship');
-        var clash = [plate, dc, chat].some(function (o) { return hit(o, np) || hit(o, nship); });
+        var clash = [plate, dc].some(function (o) { return hit(o, np) || hit(o, nship); });
         var toRes = next.classList.contains('hm-stop--result'), turns = toRes || phone || clash;
         // plates that share one place (all chapters stand left since client edits 3b; tablets share one column): the new one starts
         // only once the old is at 0 — never two texts at once
         var qo = turns ? q * .6 : q, ti = turns ? T + qo * (clash && !phone ? 1 : .3) : T;
-        inAt = chat ? T + qo : T;   // the photo starts the moment the messages reach 0
+        inAt = T;
         // the old illustration mark leaves with the old text, so two marks never stack
-        tl.to([plate, dc, chat, illu].filter(Boolean), { autoAlpha: 0, y: phone ? 0 : -16, duration: qo }, T)
+        tl.to([plate, dc, illu].filter(Boolean), { autoAlpha: 0, y: phone ? 0 : -16, duration: qo }, T)
           .set(next, { autoAlpha: 1 }, ti);
         // phones: plates are full width, so the new text comes in only after the old has gone (ti)
         var nps = [np, nship].filter(Boolean);
         if (nps.length) tl.to(nps, turns ? { autoAlpha: 1, y: 0, duration: qo * .5 } : { autoAlpha: 1, y: 0, duration: q, ease: 'power2.out' }, ti);
-        if (ni) tl.fromTo([ni, next.querySelector('.scene-veil')].filter(Boolean), phone ? { autoAlpha: 0 } : { autoAlpha: 0, filter: 'blur(6px)' }, phone ? { autoAlpha: 1, duration: .006 } : { autoAlpha: 1, filter: 'blur(0px)', duration: .006 }, inAt);
-        var nl = next.querySelector('.illu'); if (nl) tl.fromTo(nl, { autoAlpha: 0 }, { autoAlpha: 1, duration: .006 }, inAt);
+        // the next photo comes in sharp: a plain cross-fade, no blur (21.10b)
+        if (ni) tl.fromTo([ni, next.querySelector('.scene-veil')].filter(Boolean), { autoAlpha: 0 }, { autoAlpha: 1, duration: u(.0612) }, inAt);
+        var nl = next.querySelector('.illu'); if (nl) tl.fromTo(nl, { autoAlpha: 0 }, { autoAlpha: 1, duration: u(.0612) }, inAt);
         if (toRes) tl.to('.hm-fact > *:not([hidden])', { autoAlpha: 1, y: 0, duration: q, ease: 'power2.out' }, T + qo);
-        tl.set(s, { autoAlpha: 0 }, inAt + .02);
+        tl.set(s, { autoAlpha: 0 }, inAt + u(.204));
       }
     });
     tl.to({}, { duration: .001 }, .999);
