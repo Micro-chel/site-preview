@@ -1806,6 +1806,26 @@
     });
     document.documentElement.lang = getLang() === 'ru' ? 'ru' : 'uk';
     applySeoMeta();
+    spaceSlashes();
+  }
+
+  // Display font (Unbounded) runs tight: in «24/7» the 7 touched the slash. Every «/» between two glyphs in that font gets
+  // its own span with room on both sides (.sl in b-base.css); the text itself stays as it is.
+  function spaceSlashes() {
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n, list = [];
+    while ((n = w.nextNode())) {
+      var p = n.parentElement;
+      if (!/\S\/\S/.test(n.nodeValue) || !p || p.classList.contains('sl') || /^(SCRIPT|STYLE|TEXTAREA)$/.test(p.tagName)) continue;
+      if (/Unbounded/.test(getComputedStyle(p).fontFamily)) list.push(n);
+    }
+    list.forEach(function (t) {
+      var f = document.createDocumentFragment();
+      t.nodeValue.split('/').forEach(function (part, i) {
+        if (i) { var s = document.createElement('span'); s.className = 'sl'; s.textContent = '/'; f.appendChild(s); }
+        if (part) f.appendChild(document.createTextNode(part));
+      });
+      t.parentNode.replaceChild(f, t);
+    });
   }
 
   function updateSwitcherUI() {

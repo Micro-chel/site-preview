@@ -92,10 +92,18 @@ button{font:inherit;color:inherit}
 .b-arrow svg{width:18px;height:18px}
 
 /* ---------- header ---------- */
-.site-header{position:fixed;inset:0 0 auto;z-index:40;padding-top:env(safe-area-inset-top,0px);background:var(--white);box-shadow:0 1px 0 var(--line);transition:background var(--t-med),box-shadow var(--t-med)}
-/* its own light surface (a shade above the page) with a hairline, a soft shadow once the page scrolls under it (client edits 3);
-   solid, not frosted: text that scrolls under the header must never show through it */
-.site-header.is-solid,body.nav-open .site-header{background:var(--white);box-shadow:0 1px 0 var(--line),0 10px 24px -22px rgba(11,52,70,.45)}
+/* glass (21.10, the user: «стекло»): a light veil over a strong blur, so what scrolls under it turns into colour, never into
+   readable text; a light edge like the glass plates' and a hairline, a soft shadow once the page scrolls under it. Its grey text
+   is a shade darker than --muted: over the darkest ground (--ink panels, near-black photo) the veil still gives AA (4.5:1) at .78.
+   The blur lives on ::before: a backdrop-filter on the header itself would make it the box of the fixed phone menu panel inside.
+   No backdrop-filter: the old solid surface. Open phone menu: solid as before. */
+.site-header{position:fixed;inset:0 0 auto;z-index:40;padding-top:env(safe-area-inset-top,0px);--muted:#34505b;--veil:rgba(248,251,252,.78);
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.7),0 1px 0 rgba(11,52,70,.08);transition:box-shadow var(--t-med)}
+.site-header::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--veil);
+  -webkit-backdrop-filter:blur(30px) saturate(1.5);backdrop-filter:blur(30px) saturate(1.5);transition:background var(--t-med)}
+.site-header.is-solid{box-shadow:inset 0 -1px 0 rgba(255,255,255,.7),0 1px 0 rgba(11,52,70,.1),0 12px 28px -20px rgba(11,52,70,.42)}
+body.nav-open .site-header{--veil:var(--white);box-shadow:0 1px 0 var(--line),0 10px 24px -22px rgba(11,52,70,.45)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.site-header{--veil:var(--white)}}
 .header{position:relative}
 .site-header__row{display:flex;align-items:center;gap:clamp(14px,2vw,28px);height:76px}
 .site-header__logo{flex:none;display:block}
@@ -181,7 +189,7 @@ html{scrollbar-color:var(--silver) var(--frost);accent-color:var(--ink);caret-co
 .glass>*{position:relative}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{background:rgba(248,251,252,.9)}}
 /* phones: the same matte plate without a live blur — cheaper on weak Android, nothing to shimmer */
-@media (max-width:760px){.glass{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(244,248,250,.93)}.site-header.is-solid,body.nav-open .site-header{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--white)}}
+@media (max-width:760px){.glass{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(244,248,250,.93)}body.nav-open .site-header::before{-webkit-backdrop-filter:none;backdrop-filter:none}}
 
 /* ---------- modals ---------- */
 .modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:var(--s4);visibility:hidden;pointer-events:none}
@@ -370,3 +378,5 @@ html.js .faq__item.is-open .faq__a{display:grid;animation:faq-in var(--t-med) va
 .blog-card__title a::after{content:"";position:absolute;inset:0}
 .blog-card__link{font-weight:600;font-size:var(--fs-small);color:var(--logo);text-decoration:none;position:relative;z-index:1;justify-self:start;padding:6px 0}
 @media (max-width:760px){.blog-grid{grid-template-columns:1fr}}
+/* «/» between display glyphs: room on both sides (i18n.js spaceSlashes, the 7 of «24/7» touched the slash) */
+.sl{margin-inline:.09em}

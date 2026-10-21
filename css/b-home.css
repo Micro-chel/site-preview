@@ -139,6 +139,12 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   html.is-live .hm-stop{position:absolute;inset:0;min-height:0;margin:0;padding:0;display:block;background:none}
   /* the scene starts under the header (always solid): no head or face is ever behind it; the frame follows data-face (b-motion.js) */
   html.is-live .hm-stop .scene-img{top:var(--hb,76px);height:calc(100% - var(--hb,76px))}
+  /* the melting edges of a picture that stepped back (b-motion.js frame) */
+  /* the melting edges of a picture that stepped back (b-motion.js frame): tiny frost alpha ramps stretched, not CSS gradients —
+     a gradient under the rail's live blur re-dithers and shimmers by a shade at rest on a real GPU (Brave/Metal, 21.10) */
+  html.is-live .scene-veil{position:absolute;display:block;pointer-events:none;background-repeat:no-repeat;
+    --veil-l:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAABCAYAAABubagXAAAAFElEQVR42mN8++nLfwYGhj8jFQMAGB1B2D7bbN8AAAAASUVORK5CYII=);--veil-r:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAABCAYAAABubagXAAAAE0lEQVR42mN8++kLMwMDA8tIxQBQWAPUYf6m9AAAAABJRU5ErkJggg==);
+    --veil-t:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABACAYAAADbER1AAAAAFklEQVR42mN4++nLfyYGBoY/owQ5BADZvUJVUWBqHQAAAABJRU5ErkJggg==);--veil-b:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABACAYAAADbER1AAAAAFklEQVR42mN4++kLMxMDAwPLKEEOAQBvkwRRCvX2LAAAAABJRU5ErkJggg==)}
   html.is-live .hm-stop .illu{top:calc(var(--hb,76px) + 12px);bottom:auto;left:14px;right:auto}
   /* --hb / --rb (b-motion.js): the header's bottom + 12px and the rail's top − 20px, measured — cards, chat and result live between them */
   html.is-live .hm-col{position:absolute;left:0;bottom:var(--rb,calc(150px + 2 * var(--vh, 1svh)));min-height:0;padding:0}

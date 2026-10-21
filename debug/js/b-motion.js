@@ -139,24 +139,55 @@
     // the free band (client edits 3b): cards, chat and result keep 12px under the header and 22px over the rail on every window;
     // both are measured, so wrapped rail labels or a taller header move the band with them
     var stage = document.getElementById('hm-stage'), railBox = stage.querySelector('.hm-rail2'), head = document.querySelector('.site-header');
-    // each scene is framed by her face (data-face = face centre x, y and the top of her hair, shares of the picture):
-    // the hair stays in frame, the face sits in the upper third and clear of the cards on the left
+    // each scene is framed by what it is about (21.10, Windows laptops 1280×585: «Тиждень 1» showed her face, the pen in her hands
+    // went under the rail). data-subject = face + action (x1,y1,x2,y2, shares of the picture): with the chapter's slow zoom at its
+    // largest it lies whole in the free band — under the header, over the rail, clear of the cards (right of them or above them,
+    // whichever lets it be bigger). The picture covers the stage when that allows; otherwise it steps back (smaller, more of the
+    // photo seen) and its edges inside the stage melt into the frost. data-face keeps the face high and the hair in frame.
+    var ZOOM = 1.1, PAD = 10;
     var frame = function (img) {
-      var f = (img.dataset.face || '').split(',').map(Number); if (f.length < 3) return;
-      var W = img.clientWidth, H = img.clientHeight, iw = +img.getAttribute('width'), ih = +img.getAttribute('height');
-      if (!W || !H || !iw || !ih) return;
+      var sb = (img.dataset.subject || '').split(',').map(Number), f = (img.dataset.face || '').split(',').map(Number);
+      var box = img.offsetParent, iw = +img.getAttribute('width'), ih = +img.getAttribute('height');
+      if (sb.length < 4 || !box || !iw || !ih) return;
+      var bR = box.getBoundingClientRect(), SW = box.clientWidth, SH = box.clientHeight; if (!SW || !SH) return;
+      var hb = parseFloat(stage.style.getPropertyValue('--hb')) || 76, rail = railBox.getBoundingClientRect().top - bR.top;
+      var cards = [].map.call(img.parentNode.querySelectorAll('.hm-plate, .hm-doc, .hm-ship'), function (c) { return c.getBoundingClientRect(); })
+        .filter(function (r) { return r.width; });
+      var cR = cards.length ? Math.max.apply(0, cards.map(function (r) { return r.right; })) - bR.left : 0;
+      var cT = cards.length ? Math.min.apply(0, cards.map(function (r) { return r.top; })) - bR.top : SH;
+      var sw = (sb[2] - sb[0]) * iw * ZOOM, sh = (sb[3] - sb[1]) * ih * ZOOM;
+      // two free zones: right of the cards, or full width above them
+      var zones = [[cR + PAD, hb + PAD, SW - PAD, rail - PAD], [PAD, hb + PAD, SW - PAD, Math.min(rail, cT) - PAD]].map(function (z) {
+        return { z: z, k: Math.min((z[2] - z[0]) / sw, (z[3] - z[1]) / sh) };
+      }).sort(function (p, q) { return q.k - p.k; });
+      var z = zones[0].z, k0 = Math.max(SW / iw, (SH - hb) / ih), k = Math.min(k0, zones[0].k), dw = iw * k, dh = ih * k;
+      var clamp = function (v, lo, hi) { return lo > hi ? (lo + hi) / 2 : Math.max(lo, Math.min(hi, v)); };
+      // wished position: the old face framing (face in the upper third, hair in, CSS object-position across), kept to the stage...
       if (img.dataset.op0 === undefined) img.dataset.op0 = parseFloat(getComputedStyle(img).objectPosition) / 100;
-      var k = Math.max(W / iw, H / ih), dw = iw * k, dh = ih * k, ox = dw - W, oy = dh - H;
-      var py = .5, px = +img.dataset.op0, clamp = function (v) { return Math.max(0, Math.min(1, v)); };
-      if (oy > 1) py = clamp(Math.min((f[1] * dh - H * .34) / oy, (f[2] * dh - 8) / oy));
-      if (ox > 1) {
-        var col = img.parentNode.querySelector('.hm-col'), lo = (col ? col.getBoundingClientRect().right : 0) + 40, hi = W - 40, x = f[0] * dw - px * ox;
-        if (x < lo) px = (f[0] * dw - lo) / ox; else if (x > hi) px = (f[0] * dw - hi) / ox;
-        px = clamp(px);
-      }
-      img.style.objectPosition = (px * 100).toFixed(2) + '% ' + (py * 100).toFixed(2) + '%';
-      // the slow zoom of each chapter grows around her face, so it never pushes the head out of frame
-      img.style.transformOrigin = Math.round(f[0] * dw - px * ox) + 'px ' + Math.round(f[1] * dh - py * oy) + 'px';
+      // a picture that stepped back hugs the right edge (she stands right, the cards left) and the header
+      var X = dw < SW ? SW - dw : clamp(-(+img.dataset.op0) * (dw - SW), SW - dw, 0);
+      var Y = dh < SH - hb ? hb : clamp(f.length > 2 ? hb + Math.max(.34 * (SH - hb) - f[1] * dh, 8 - f[2] * dh) : hb, SH - dh, hb);
+      // ...then the subject wins: its centre is moved until the zoomed subject sits inside the zone
+      var cx = (sb[0] + sb[2]) / 2, cy = (sb[1] + sb[3]) / 2, hx = sw * k / 2, hy = sh * k / 2;
+      X = clamp(X + cx * dw, z[0] + hx, z[2] - hx) - cx * dw;
+      Y = clamp(Y + cy * dh, z[1] + hy, z[3] - hy) - cy * dh;
+      // a gap of a few px is not worth a melting edge: the picture closes it
+      if (X > 0 && X <= 4) X = 0; if (X + dw < SW && X + dw >= SW - 4) X = SW - dw;
+      if (Y > hb && Y <= hb + 4) Y = hb; if (Y + dh < SH && Y + dh >= SH - 4) Y = SH - dh;
+      // whole pixels: a fractional box under the rail's live blur shimmers by a shade at rest
+      X = Math.round(X); Y = Math.round(Y); dw = Math.round(dw); dh = Math.round(dh);
+      var box4 = { left: X + 'px', top: Y + 'px', width: dw + 'px', height: dh + 'px', right: 'auto', bottom: 'auto', maxWidth: 'none', maxHeight: 'none',
+        transformOrigin: Math.round(cx * dw) + 'px ' + Math.round(cy * dh) + 'px' };   // the zoom grows around the subject's centre
+      Object.assign(img.style, box4, { objectPosition: '50% 50%' });
+      // edges that end inside the stage melt into the frost — painted by a veil over the picture, not a mask on it:
+      // a masked picture under the rail's live blur shimmers at rest on a real GPU (Brave/Metal, 21.10)
+      var veil = img.nextElementSibling && img.nextElementSibling.classList.contains('scene-veil') ? img.nextElementSibling : null;
+      if (!veil) { veil = document.createElement('i'); veil.className = 'scene-veil'; veil.setAttribute('aria-hidden', 'true'); img.after(veil); }
+      var g = [], gs = [], gp = [], fw = Math.round(Math.min(dw, dh) * .12) + 'px';
+      var fade = function (side, on, size, pos) { if (on) { g.push('var(--veil-' + side + ')'); gs.push(size); gp.push(pos); } };
+      fade('l', X > 0, fw + ' 100%', 'left top'); fade('r', X + dw < SW, fw + ' 100%', 'right top');
+      fade('t', Y > hb, '100% ' + fw, 'left top'); fade('b', Y + dh < SH, '100% ' + fw, 'left bottom');
+      Object.assign(veil.style, box4, { backgroundImage: g.join(','), backgroundSize: gs.join(','), backgroundPosition: gp.join(','), display: g.length ? '' : 'none' });
     };
     var band = function () {
       var hb = head ? Math.max(0, head.getBoundingClientRect().bottom) : 76, sh = stage.clientHeight, rb = sh - railBox.offsetTop + 22;
@@ -171,7 +202,11 @@
     undo.push(function () {
       if (bandRO) bandRO.disconnect();
       ['--hb', '--rb', '--av'].forEach(function (v) { stage.style.removeProperty(v); });
-      [].forEach.call(stage.querySelectorAll('.hm-stop .scene-img'), function (img) { img.style.objectPosition = img.style.transformOrigin = ''; delete img.dataset.op0; });
+      [].forEach.call(stage.querySelectorAll('.hm-stop .scene-img'), function (img) {
+        ['objectPosition', 'transformOrigin', 'left', 'top', 'width', 'height', 'right', 'bottom', 'maxWidth', 'maxHeight'].forEach(function (p) { img.style[p] = ''; });
+        var v = img.nextElementSibling; if (v && v.classList.contains('scene-veil')) v.remove();
+        delete img.dataset.op0;
+      });
     });
     if (frost) cv.style.webkitMaskImage = cv.style.maskImage = 'radial-gradient(ellipse 68% 74% at 50% 46%, transparent 46%, #000 92%)';
 
@@ -192,7 +227,8 @@
       var a = A[i], l = L[i];
       var img = s.querySelector('.scene-img'), illu = s.querySelector('.illu');
       var plate = s.querySelector('.hm-plate'), dc = s.querySelector('.hm-doc'), chat = s.querySelector('.hm-chat');
-      if (img) tl.fromTo(img, { scale: 1.1 }, { scale: 1, duration: l * .45 }, a);
+      var veil = s.querySelector('.scene-veil');
+      if (img) tl.fromTo([img, veil].filter(Boolean), { scale: 1.1 }, { scale: 1, duration: l * .45 }, a);
       if (dc) tl.to(dc, { autoAlpha: 1, y: 0, duration: l * .07, ease: 'power2.out' }, a + l * .08);
       if (chat) {
         // the chat comes over the same photo: it softens (blur + a light veil) and stays whole, the heroine in frame
@@ -236,7 +272,7 @@
         // phones: plates are full width, so the new text comes in only after the old has gone (ti)
         var nps = [np, nship].filter(Boolean);
         if (nps.length) tl.to(nps, turns ? { autoAlpha: 1, y: 0, duration: qo * .5 } : { autoAlpha: 1, y: 0, duration: q, ease: 'power2.out' }, ti);
-        if (ni) tl.fromTo(ni, phone ? { autoAlpha: 0 } : { autoAlpha: 0, filter: 'blur(6px)' }, phone ? { autoAlpha: 1, duration: .006 } : { autoAlpha: 1, filter: 'blur(0px)', duration: .006 }, inAt);
+        if (ni) tl.fromTo([ni, next.querySelector('.scene-veil')].filter(Boolean), phone ? { autoAlpha: 0 } : { autoAlpha: 0, filter: 'blur(6px)' }, phone ? { autoAlpha: 1, duration: .006 } : { autoAlpha: 1, filter: 'blur(0px)', duration: .006 }, inAt);
         var nl = next.querySelector('.illu'); if (nl) tl.fromTo(nl, { autoAlpha: 0 }, { autoAlpha: 1, duration: .006 }, inAt);
         if (toRes) tl.to('.hm-fact > *:not([hidden])', { autoAlpha: 1, y: 0, duration: q, ease: 'power2.out' }, T + qo);
         tl.set(s, { autoAlpha: 0 }, inAt + .02);

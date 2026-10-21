@@ -4,8 +4,9 @@
    Shared components (cards, rings, FAQ, reviews, medicine cards) live in b-base.css. */
 
 /* ---------- page frame ---------- */
-/* no scene under the header here: it is a solid frost bar from the first frame (the hairline comes with scrolling) */
-.site-header{background:var(--frost)}
+/* no scene under the header here: the same glass in the page's frost tone (b-base.css), a touch denser for AA over photos */
+.site-header{--veil:rgba(237,242,244,.8)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.site-header{--veil:var(--frost)}}
 .pg{padding:76px 0 var(--section)}
 .breadcrumbs{padding-top:clamp(12px,2vw,28px)}
 .breadcrumbs ol{display:flex;flex-wrap:wrap;align-items:center;margin:0;padding:0;list-style:none;font-size:var(--fs-micro);color:var(--muted)}
