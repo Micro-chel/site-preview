@@ -189,13 +189,20 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
 .about__desc strong{color:var(--ink);font-weight:600}
 /* the two ways on: buttons like the first screen's (17.10, the client) — the clinic filled, the programme outlined */
 .about__links{display:flex;flex-wrap:wrap;gap:12px}
-/* the four facts sit on the route: one line through four nodes */
-.about-facts{display:grid;align-self:start;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;position:relative;padding-top:clamp(8px,2vw,24px)}
-.about-facts::before{content:"";position:absolute;left:24px;right:calc(25% - 24px);top:calc(clamp(8px,2vw,24px) + 23px);height:2px;background:var(--line)}
-.about-facts__item{position:relative;display:grid;gap:14px;align-content:start}
-.about-facts__icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--white);color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
-.about-facts__title{display:block;font-family:var(--f-display);font-weight:400;font-size:clamp(16px,1.2vw,18px);letter-spacing:-.02em;line-height:1.2;margin-bottom:6px}
-.about-facts__text{display:block;color:var(--muted);font-size:var(--fs-small)}
+/* the four facts: cards in the language of «Переваги» (24.10, the client: «просто текстом») — two by two everywhere */
+.about-facts{display:grid;align-self:start;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.4vw,16px)}
+.about-facts__item{padding:clamp(18px,1.8vw,24px) clamp(12px,1.6vw,22px) clamp(20px,2vw,26px);border:1px solid rgba(11,52,70,.11);border-radius:var(--r-card);
+  background:linear-gradient(180deg,var(--white) 0%,#e7eef1 100%);display:grid;gap:12px;align-content:start;justify-items:center;text-align:center}
+.about-facts__title{display:block;font-family:var(--f-body);font-weight:600;font-size:var(--fs-lead);line-height:1.25;margin-bottom:4px;text-wrap:balance}
+.about-facts__text{display:block;color:var(--muted);font-size:var(--fs-small);line-height:1.45;text-wrap:balance}
+/* «Переваги» (24.10, the client: «тухло… хотя бы центрируем как на старом, и иконки в цвет»): centred, the icon a filled
+   disc from the logo's petrol to a lighter sea-blue, white glyph, soft coloured shadow; the about facts share it */
+.advantages__item{justify-items:center;text-align:center}
+.advantages__item-title,.advantages__item-text{text-wrap:balance}
+.advantages__icon,.about-facts__icon{width:56px;height:56px;margin-bottom:6px;border-radius:50%;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(145deg,#0a4a6d 0%,var(--logo) 45%,#2a83ad 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 10px 22px -10px rgba(12,88,129,.6),0 2px 6px -2px rgba(11,52,70,.25)}
+.advantages__icon svg,.about-facts__icon svg{width:24px;height:24px}
 .about__card-part{display:grid;gap:18px}
 .about__title--card{font-size:var(--fs-h3);font-weight:300}
 .about-doctors{position:relative;display:grid;grid-template-columns:auto auto 1fr;grid-template-areas:"vp vp vp" "prev next dots";gap:16px 10px;align-items:center}
@@ -352,8 +359,6 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   .advantages__stat:nth-child(odd){border-left:0;padding-left:var(--pad)}
   .advantages__stat:nth-child(n+3){border-top:1px solid var(--rule)}
   .advantages__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .about-facts{grid-template-columns:1fr 1fr;row-gap:32px}
-  .about-facts::before{display:none}
   .about__card-part{max-width:460px}
   .pen-vs-program__grid{grid-template-columns:1fr}
   .pen-vs-program__or{justify-self:center}
@@ -412,8 +417,8 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   .hm-fact__time{font-size:20px}
   .hm-fact .actions{justify-content:center}
   .scene-img--door{object-position:57% 40%}
-  .about-facts{grid-template-columns:1fr}
-  .about-facts__item{grid-template-columns:48px 1fr;align-items:start;gap:16px}
+  .about-facts__title{font-size:16px}
+  .about-facts__text{font-size:14px}
   .advantages__grid{grid-template-columns:1fr;gap:12px}
   /* the panel runs edge to edge on phones: two columns of big numbers on thin rules */
   .advantages__panel{--pad:var(--gutter);margin-inline:calc(-1 * var(--gutter));padding-top:48px;border-radius:0}

@@ -160,6 +160,26 @@ body.nav-open .site-header{--veil:var(--white);box-shadow:0 1px 0 var(--line),0 
   .site-nav__sub{position:static;opacity:1;visibility:visible;transform:none;box-shadow:none;border:0;background:none;padding:0 0 12px;min-width:0}
   .site-nav__sub .site-nav__link{font:400 16px/1.3 var(--f-body);padding:8px 0;color:var(--muted)}
 }
+/* phone header (24.10, the client: «пусто… номер может»): the number fills the gap between the logo and UA/RU — a quiet link
+   in the header's ink, not a button; the language switch a little tighter so it fits from 360 up. Below 360 it steps aside:
+   the floating call button is already there. Header height and glass unchanged. */
+@media (max-width:959px){
+  .header__info{display:flex;order:1;margin-left:auto}
+  .header__info-item:first-child,.header__info .t-text-4{display:none}
+  .site-lang-switch{order:2;margin-left:0}
+  .header__phone{display:inline-flex;align-items:center;min-height:44px;font-size:14px;font-weight:500;color:var(--ink);letter-spacing:-.005em}
+}
+@media (max-width:479px){
+  .site-header__row{gap:10px}
+  .header__phone{font-size:13px}
+  .lang-switch__btn{padding-inline:8px;min-width:34px}
+}
+@media (max-width:374px){
+  .site-header__row{gap:8px}
+  .header__phone{letter-spacing:-.012em}
+  .lang-switch__btn{padding-inline:6px;min-width:31px}
+}
+@media (max-width:359px){.header__info{display:none}.site-lang-switch{margin-left:auto}}
 
 /* floating call button injected by nav.js on phones */
 .fab-call{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:35;width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--white);display:grid;place-items:center;box-shadow:0 0 0 1px rgba(143,208,226,.6),0 12px 28px -12px rgba(11,52,70,.6)}
@@ -285,8 +305,8 @@ html{scrollbar-color:var(--silver) var(--frost);accent-color:var(--ink);caret-co
 @media (max-width:760px){.scene-img{object-position:74% 40%}}
 .advantages__item,.b-card{padding:clamp(20px,2vw,28px) clamp(20px,2vw,28px) clamp(22px,2.2vw,30px);border:1px solid rgba(11,52,70,.11);border-radius:var(--r-card);
   background:linear-gradient(180deg,var(--white) 0%,#e7eef1 100%);display:grid;gap:8px;align-content:start}
-.advantages__icon,.b-card__icon{width:44px;height:44px;margin-bottom:8px;border-radius:50%;display:grid;place-items:center;color:var(--ink);background:var(--white);box-shadow:inset 0 0 0 1.5px var(--ink)}
-.advantages__icon svg,.b-card__icon svg{width:22px;height:22px}
+.b-card__icon{width:44px;height:44px;margin-bottom:8px;border-radius:50%;display:grid;place-items:center;color:var(--ink);background:var(--white);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.b-card__icon svg{width:22px;height:22px}
 .advantages__item-title,.b-card__title{font-family:var(--f-body);font-weight:600;font-size:var(--fs-lead);letter-spacing:0;line-height:1.3}
 .advantages__item-text,.b-card__text{color:var(--muted);font-size:var(--fs-small)}
 .prep-cards__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:clamp(28px,4vw,52px);border-radius:32px;overflow:hidden;background:var(--white);box-shadow:inset 0 0 0 1px var(--line)}
