@@ -203,6 +203,22 @@ html.is-scrolling .rail__doc.in-view::after{animation-play-state:running}
   background:linear-gradient(145deg,#0a4a6d 0%,var(--logo) 45%,#2a83ad 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 10px 22px -10px rgba(12,88,129,.6),0 2px 6px -2px rgba(11,52,70,.25)}
 .advantages__icon svg,.about-facts__icon svg{width:24px;height:24px}
+/* hover (26.10, the user: «как на старом — подсветка-обводка»): the card lifts 6px, a 1px gradient rim (ink → logo → ice,
+   mask xor on ::before) fades in, a ring and a soft glow in the icons' blue. Mouse only — touch keeps no stuck state;
+   reduced motion: rim and shadow without the lift. Transform only, so the grid never moves. */
+@media (hover:hover) and (pointer:fine){
+  .advantages__item,.about-facts__item{position:relative;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease}
+  .advantages__item::before,.about-facts__item::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
+    background:linear-gradient(145deg,rgba(12,88,129,.55),rgba(42,131,173,.18) 50%,rgba(143,208,226,.7));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;
+    mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;opacity:0;transition:opacity .35s ease}
+  .advantages__item:hover,.about-facts__item:hover{transform:translateY(-6px);border-color:rgba(12,88,129,.16);
+    box-shadow:0 16px 48px -6px rgba(11,52,70,.16),0 0 0 1px rgba(143,208,226,.42),0 0 40px rgba(42,131,173,.16)}
+  .advantages__item:hover::before,.about-facts__item:hover::before{opacity:1}
+}
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:reduce){
+  .advantages__item:hover,.about-facts__item:hover{transform:none}
+}
 .about__card-part{display:grid;gap:18px}
 .about__title--card{font-size:var(--fs-h3);font-weight:300}
 .about-doctors{position:relative;display:grid;grid-template-columns:auto auto 1fr;grid-template-areas:"vp vp vp" "prev next dots";gap:16px 10px;align-items:center}
