@@ -160,11 +160,11 @@ body.nav-open .site-header{--veil:var(--white);box-shadow:0 1px 0 var(--line),0 
   .site-nav__sub{position:static;opacity:1;visibility:visible;transform:none;box-shadow:none;border:0;background:none;padding:0 0 12px;min-width:0}
   .site-nav__sub .site-nav__link{font:400 16px/1.3 var(--f-body);padding:8px 0;color:var(--muted)}
 }
-/* phone header (24.10, the client: «пусто… номер может»): the number fills the gap between the logo and UA/RU — a quiet link
+/* phone header (24.10, the client: «пусто… номер может»; 27.10: centred between them, equal gaps): the number fills the gap between the logo and UA/RU — a quiet link
    in the header's ink, not a button; the language switch a little tighter so it fits from 360 up. Below 360 it steps aside:
    the floating call button is already there. Header height and glass unchanged. */
 @media (max-width:959px){
-  .header__info{display:flex;order:1;margin-left:auto}
+  .header__info{display:flex;order:1;flex:1 1 auto;justify-content:center;min-width:0;margin-left:0}
   .header__info-item:first-child,.header__info .t-text-4{display:none}
   .site-lang-switch{order:2;margin-left:0}
   .header__phone{display:inline-flex;align-items:center;min-height:44px;font-size:14px;font-weight:500;color:var(--ink);letter-spacing:-.005em}
