@@ -1,0 +1,160 @@
+/* Calculators and the test (calc-term, calc-kcal, BMI × WHtR, quiz 31.10): the minimum on top of b-bmi.css / b-quiz.css.
+   Loaded after them. The designer polishes it (D5); markup: js/calc-common.js, js/bmi-calculator.js, js/quiz.js. */
+
+/* calculator card: steps */
+.calc{grid-template-columns:1fr}
+.calc [hidden]{display:none!important}
+.calc-q{margin:0;font:400 var(--fs-h3)/1.25 var(--f-display);color:var(--ink)}
+.calc-checks,.calc-choices{display:grid;gap:8px}
+.calc-check,.calc-choice{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r-control);cursor:pointer;line-height:1.4}
+.calc-check:has(input:checked),.calc-choice:has(input:checked){border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.calc-check input,.calc-choice input{margin:.2em 0 0;flex:none;accent-color:var(--ink)}
+.calc-next{justify-self:start}
+.calc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.calc-field--choice{grid-column:1/-1;margin:0;padding:0;border:0;min-width:0}
+.calc-field--choice legend{padding:0;margin-bottom:8px}
+.calc-error{display:block;margin-top:4px;font-size:var(--fs-micro);color:#b3261e}
+.calc-link{justify-self:start;padding:0;border:0;background:none;color:inherit;font:inherit;font-size:var(--fs-small);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+/* result on the ink panel of b-bmi.css */
+.calc-result{gap:12px}
+.calc-result p{margin:0}
+.calc-result__title{font:300 clamp(20px,2.2vw,28px)/1.25 var(--f-display);color:var(--white)}
+.calc-result__sub,.calc-result__dates{color:var(--white)}
+.calc-note{color:var(--muted-dark);line-height:1.5}
+.calc-note--doctor{padding-left:12px;border-left:2px solid var(--ice)}
+.calc-small{font-size:var(--fs-small);color:var(--muted-dark)}
+.calc-result a:not(.btn){color:inherit}
+.calc-actions,.bmi-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px}
+.calc-actions .btn,.bmi-actions .btn,.quiz-result__actions .btn{white-space:normal;height:auto;min-height:48px;text-align:center}
+/* on the ink panel: the primary button is ice, the outline one is a white ring (as .art-cta on design) */
+.calc-result .btn:not(.btn--outline),.bmi-result .btn:not(.btn--outline){background:var(--ice);color:var(--ink)}
+.calc-result .btn--outline,.bmi-result .btn--outline{background:transparent;color:var(--white);box-shadow:inset 0 0 0 1px var(--white)}
+
+/* BMI: scenario, notes, the WHO class row of the page text */
+.bmi-scenario__title{display:block;margin-bottom:4px;color:var(--white)}
+.bmi-extra__note--small{font-size:var(--fs-micro)}
+.bmi-extra__note--error{color:#ffb4ab}
+.bmi-extra a{color:inherit}
+.art-table tr.is-active>*{background:var(--mist);font-weight:600}
+
+/* quiz: number fields, «don't know», several answers, result */
+.quiz-num{width:6.5em;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r-control);font:inherit}
+.quiz-range__head label{flex:1}
+.quiz-check{display:flex;gap:10px;align-items:center;margin-top:12px;cursor:pointer}
+.quiz-option[role="checkbox"]{position:relative;padding-left:44px;text-align:left}
+.quiz-option[role="checkbox"]::before{content:"";position:absolute;left:16px;top:50%;width:16px;height:16px;margin-top:-8px;border:1.5px solid currentColor;border-radius:4px}
+.quiz-option[role="checkbox"][aria-checked="true"]::before{background:currentColor;box-shadow:inset 0 0 0 3px var(--ink)}
+.quiz-result__metrics{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.quiz-reasons__title{margin:0 0 6px;font-weight:600}
+.quiz-reasons ul{margin:0;padding-left:1.2em}
+.quiz-result__note{padding-left:12px;border-left:2px solid var(--ink)}
+
+@media (max-width:759px){
+  .calc-grid{grid-template-columns:1fr}
+}
+
+/* ===================== SEO-D5: the look (designer, 31.10). Markup and texts are the scripts'; only CSS here. ===================== */
+
+/* ---- calculators: one rhythm for the three steps ---- */
+.calc .calc-step{display:grid;gap:clamp(16px,1.6vw,22px)}
+.calc .calc-q{font-weight:300;letter-spacing:-.025em;max-width:28ch}
+/* the exclusion list and the radio groups: light rows with a drawn mark instead of the native control */
+.calc-check,.calc-choice{position:relative;align-items:center;min-height:56px;padding:14px 18px 14px 52px;border-radius:18px;background:var(--frost);
+  transition:border-color var(--t-fast),background var(--t-fast),box-shadow var(--t-fast)}
+.calc-check:hover,.calc-choice:hover{border-color:var(--ink);background:var(--white)}
+.calc-check input,.calc-choice input{position:absolute;left:18px;top:50%;width:22px;height:22px;margin:-11px 0 0;opacity:0;cursor:pointer}
+.calc-check span::before,.calc-choice span::before{content:"";pointer-events:none;position:absolute;left:18px;top:50%;width:22px;height:22px;margin-top:-11px;box-sizing:border-box;
+  border:1.5px solid var(--ink);background:var(--white);transition:background var(--t-fast),box-shadow var(--t-fast)}
+.calc-check span::before{border-radius:6px}
+.calc-choice span::before{border-radius:50%}
+.calc-check:has(input:checked) span::before{background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M6 11.5l3.2 3.1L16 7.8' fill='none' stroke='%23f8fbfc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
+.calc-choice:has(input:checked) span::before{background:var(--ink);box-shadow:inset 0 0 0 4px var(--white)}
+.calc-check:has(input:checked),.calc-choice:has(input:checked){background:var(--white);border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.calc-check:has(input:focus-visible),.calc-choice:has(input:focus-visible){outline:2px solid var(--logo);outline-offset:2px}
+.calc-choices{gap:8px}
+.calc-field--choice legend{font-size:var(--fs-small);color:var(--muted)}
+.calc-next{min-width:160px}
+.calc-next:disabled{background:var(--silver);color:var(--muted);cursor:not-allowed}
+.calc-error{color:#a3261b}
+.calc-field:has(.calc-error:not([hidden])) .bmi-field__input{border-color:#a3261b;box-shadow:inset 0 0 0 1px #a3261b}
+.calc-back{margin-top:-4px}
+/* result: the ink panel; title → range → dates; notes quiet; the doctor note on a faint plate instead of a side stripe */
+.calc-result{gap:14px}
+.calc-result__title{font-size:clamp(22px,1.2vw + 14px,30px);letter-spacing:-.03em;line-height:1.18;text-wrap:balance}
+.calc-result__title+.calc-result__title{margin-top:-4px;font-size:clamp(19px,.8vw + 13px,24px);color:var(--ice)}
+.calc-result__sub{font:300 clamp(18px,.6vw + 14px,22px)/1.3 var(--f-display);letter-spacing:-.02em;color:var(--ice)}
+.calc-result__dates{font-size:var(--fs-small);color:var(--white)}
+.calc-note{font-size:var(--fs-small);line-height:1.55;max-width:60ch}
+.calc-note--doctor{padding:12px 16px;border-left:0;border-radius:14px;background:rgba(248,251,252,.08);color:var(--white)}
+.calc-small{font-size:var(--fs-micro);line-height:1.55;max-width:64ch}
+.calc-result .calc-small+.calc-note,.calc-result .calc-result__dates+.calc-small{margin-top:2px}
+.calc-result a:not(.btn){color:var(--ice);text-underline-offset:3px}
+.calc-actions{margin-top:10px;gap:10px 18px}
+.calc-result .calc-link{color:var(--white)}
+.calc-result .btn--outline:hover,.bmi-result .btn--outline:hover{background:var(--white);color:var(--ink)}
+.calc-result .btn:not(.btn--outline):hover,.bmi-result .btn:not(.btn--outline):hover{background:var(--white)}
+
+/* ---- BMI × WHtR: the scenario line reads as a short verdict ---- */
+.bmi-scenario__title{font:400 var(--fs-lead)/1.3 var(--f-body);font-weight:600}
+.bmi-extra__note--error{color:#ffb4ab}
+
+/* ---- test: number fields as the calculators' fields, own checkbox, three levels marked on a 3-step scale ---- */
+.quiz-range__head{align-items:center}
+.quiz-num{width:7.5em;min-height:52px;padding:10px 14px;border-radius:var(--r-control);border:1px solid var(--line);background:var(--frost);color:var(--ink);
+  font:300 24px/1 var(--f-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.quiz-num::-webkit-inner-spin-button,.quiz-num::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.quiz-num:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(12,88,129,.16);background:var(--white)}
+.quiz-check{position:relative;min-height:44px;padding-left:34px;margin-top:4px;font-size:var(--fs-small)}
+.quiz-check input{position:absolute;left:0;top:50%;width:22px;height:22px;margin:-11px 0 0;opacity:0;cursor:pointer}
+.quiz-check span::before{content:"";pointer-events:none;position:absolute;left:0;top:50%;width:22px;height:22px;margin-top:-11px;box-sizing:border-box;border:1.5px solid var(--ink);border-radius:6px;background:var(--white)}
+.quiz-check:has(input:checked) span::before{background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M6 11.5l3.2 3.1L16 7.8' fill='none' stroke='%23f8fbfc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
+.quiz-check:has(input:focus-visible) span::before{outline:2px solid var(--logo);outline-offset:2px}
+.quiz-waist:has(#quiz-waist-unknown:checked) .quiz-num{opacity:.45}
+.quiz-option[role="checkbox"]::before{width:20px;height:20px;margin-top:-10px;border-radius:6px}
+.quiz-option[role="checkbox"][aria-checked="true"]::before{background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M6 11.5l3.2 3.1L16 7.8' fill='none' stroke='%230b3446' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat;border-color:var(--white);box-shadow:none}
+
+/* result: the level as three short bars after the eyebrow (1 — one bar, 3 — all three); no traffic-light colours */
+.quiz-result{--lv:1}
+.quiz-result[data-level="2"]{--lv:2}
+.quiz-result[data-level="3"]{--lv:3}
+.quiz-result__eyebrow::after{content:"";width:78px;height:4px;margin-left:6px;border-radius:2px;
+  background:linear-gradient(90deg,var(--ice) calc(var(--lv) * 33.34%),rgba(248,251,252,.18) 0);
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 24px,transparent 24px 27px);mask:repeating-linear-gradient(90deg,#000 0 24px,transparent 24px 27px)}
+.quiz-card--result{display:grid;gap:14px;justify-items:start}
+.quiz-card--result>*{margin:0}
+.quiz-result__text{font-size:var(--fs-body);line-height:1.6;color:var(--white);max-width:60ch}
+.quiz-result__metrics{gap:0;width:100%;max-width:64ch;margin-top:6px;border-top:1px solid var(--line-dark)}
+.quiz-result__metrics li{padding:12px 0;border-bottom:1px solid var(--line-dark);font-size:var(--fs-small);color:var(--white)}
+.quiz-reasons{width:100%;max-width:64ch}
+.quiz-reasons__title{font-size:var(--fs-small);color:var(--ice);font-weight:500}
+.quiz-reasons ul{display:grid;gap:8px;padding:0;list-style:none}
+.quiz-reasons li{position:relative;padding-left:24px;font-size:var(--fs-small);line-height:1.5;color:var(--white)}
+.quiz-reasons li::before{content:"";position:absolute;left:0;top:.72em;width:12px;height:2px;border-radius:2px;background:var(--ice)}
+.quiz-result__note{padding:12px 16px;border-left:0;border-radius:14px;background:rgba(248,251,252,.08);font-size:var(--fs-small);line-height:1.55;max-width:64ch}
+.quiz-result__actions{margin-top:8px}
+.quiz-card--result .quiz-result__actions .btn--outline{background:transparent;color:var(--white);border:1px solid rgba(248,251,252,.5);box-shadow:none}
+.quiz-card--result .quiz-result__actions .btn--outline:hover{background:var(--white);color:var(--ink);border-color:var(--white)}
+.quiz-card--result .quiz-result__privacy{color:var(--muted-dark)}
+.quiz-card--form{display:grid;gap:12px}
+.quiz-card--form>*{margin:0}
+
+/* the consent box of the test's contact form: the same box and tick as the test's own checkboxes (the site's other forms keep theirs) */
+.quiz-card--form .form__check{align-items:center;min-height:44px}
+.quiz-card--form .form__check-box{width:22px;height:22px;margin-top:0;border:1.5px solid var(--ink);border-radius:6px}
+.quiz-card--form .form__check input:checked+.form__check-box{background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M6 11.5l3.2 3.1L16 7.8' fill='none' stroke='%23f8fbfc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
+.quiz-card--form .form__check input:checked+.form__check-box::after{content:none}
+.quiz-card--form .form__check input:focus-visible+.form__check-box{outline:2px solid var(--logo);outline-offset:2px}
+
+/* ---- the test page: the test on top (one comfortable column), the long text under it at full width ---- */
+.qz-grid:has(.art--embed){grid-template-columns:minmax(0,1fr)}
+.qz-grid:has(.art--embed) .quiz-page__inner{width:100%;max-width:820px}
+.qz-grid>.art--embed{margin-top:clamp(24px,4vw,56px)}
+
+@media (max-width:759px){
+  .calc-check,.calc-choice{padding-left:48px}
+  .calc-check input,.calc-choice input,.calc-check span::before,.calc-choice span::before{left:14px}
+  .calc-next{width:100%}
+  .calc-actions .btn{flex:1 1 100%}
+  .quiz-range__head{flex-wrap:wrap}
+}

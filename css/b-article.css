@@ -1,0 +1,235 @@
+/* Avelis «Кришталь» — long SEO pages (articles of «Схуднення» and the blog, texts inside medicine/quiz/BMI pages).
+   Markup: the contract of tools/content (FORMAT.md §4) — .art > .art-head + .art-body (.art-toc + .art-text) + .art-related.
+   Loaded after b-base.css and b-inner.css. Calm like every inner page: no scroll choreography, the only reaction is
+   the table of contents following the reading (js/b-inner.js). Reading column ≈ 68–72 characters. */
+
+/* ---------- frame: .art is its own wrap (inside main.pg); inside a .wrap it simply fills it ---------- */
+.art{container:art/inline-size;--art-col:minmax(0,46rem);--art-toc:15rem;--art-gap:clamp(40px,5vw,80px);
+  width:min(var(--wrap),100% - 2*var(--gutter));margin-inline:auto}
+.wrap>.art,.art .art{width:auto}
+
+/* ---------- head: crumbs, title, date, cover ---------- */
+.art-head{display:grid;gap:16px;justify-items:start;padding-top:clamp(4px,1vw,12px)}
+.pg-crumbs ol{display:flex;flex-wrap:wrap;align-items:center;margin:0;padding:0;list-style:none;font-size:var(--fs-micro);color:var(--muted)}
+.pg-crumbs li{display:inline-flex;align-items:center;min-height:32px}
+.pg-crumbs li+li::before{content:"";width:14px;height:1px;margin:0 10px;background:var(--silver)}
+.pg-crumbs a{color:var(--muted);text-decoration:none}
+.pg-crumbs a:hover{color:var(--ink)}
+.pg-crumbs li:last-child{color:var(--ink)}
+.art-h1{font-size:clamp(28px,2.2vw + 18px,52px);font-weight:300;letter-spacing:-.035em;line-height:1.08;max-width:22ch;overflow-wrap:break-word;margin-top:clamp(6px,1.4vw,20px)}
+.art-meta{display:flex;align-items:center;gap:12px;font-size:var(--fs-small);color:var(--muted)}
+.art-meta::before{content:"";width:24px;height:2px;border-radius:2px;background:var(--logo)}
+.art-cover{justify-self:stretch;margin:clamp(12px,2vw,24px) 0 0;border-radius:32px;overflow:hidden;background:var(--mist);aspect-ratio:21/9}
+.art-cover>picture{display:block;height:100%}
+.art-cover img{display:block;width:100%;height:100%;object-fit:cover}
+.art-cover>.art-slot{height:100%;border-radius:0;aspect-ratio:auto}
+
+/* ---------- body: contents on the left (sticky), the text column beside it ---------- */
+.art-body{display:grid;grid-template-columns:var(--art-toc) var(--art-col);gap:var(--art-gap);align-items:start;margin-top:clamp(36px,5vw,72px)}
+.art-text{grid-column:2;min-width:0}
+
+/* contents: <nav class="art-toc">[<details><summary>Зміст</summary>]<ol>…</ol>[</details>]</nav> */
+.art-toc{position:sticky;top:104px;max-height:calc(100vh - 128px);overflow:auto;overscroll-behavior:contain;font-size:var(--fs-small);scrollbar-width:thin}
+.art-toc details{display:block}
+.art-toc summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;cursor:default;font:500 var(--fs-micro)/1.3 var(--f-body);color:var(--muted);padding-bottom:12px}
+.art-toc summary::-webkit-details-marker{display:none}
+.art-toc ol{display:grid;gap:2px;margin:0;padding:0;list-style:none;counter-reset:toc;border-left:1px solid var(--line)}
+.art-toc li{counter-increment:toc}
+.art-toc a{position:relative;display:grid;grid-template-columns:2ch minmax(0,1fr);gap:8px;padding:7px 0 7px 16px;color:var(--muted);text-decoration:none;line-height:1.35;transition:color var(--t-fast)}
+.art-toc a::before{content:counter(toc);font-variant-numeric:tabular-nums;color:rgba(69,96,107,.55);transition:color var(--t-fast)}
+.art-toc a::after{content:"";position:absolute;left:-1px;top:8px;bottom:8px;width:2px;border-radius:2px;background:var(--logo);transform:scaleY(0);transition:transform var(--t-med) var(--ease-out)}
+.art-toc a:hover{color:var(--ink)}
+.art-toc a.is-on{color:var(--ink)}
+.art-toc a.is-on::before{color:var(--logo)}
+.art-toc a.is-on::after{transform:none}
+/* a closed <details> still shows its list on wide screens (no JS needed; b-inner.js also opens it) */
+@container art (min-width:1000px){.art-toc details::details-content{content-visibility:visible;display:contents}.art-toc summary{pointer-events:none}}
+
+/* ---------- the text ---------- */
+.art-text{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;line-height:1.7}
+.art-text>*{margin:0}
+.art-text>p,.art-text>ul,.art-text>ol,.art-text>h3{max-width:68ch}
+.art-text>p:first-child{font-size:var(--fs-lead);line-height:1.55;color:var(--ink)}
+.art-text h2{font-size:clamp(24px,1.4vw + 16px,34px);font-weight:300;letter-spacing:-.03em;line-height:1.12;max-width:24ch;overflow-wrap:break-word;
+  margin-top:clamp(36px,4.4vw,60px)}
+.art-text h2+*{margin-top:4px}
+.art-text>h2:first-child{margin-top:0}
+.art-text h3{font:600 var(--fs-lead)/1.3 var(--f-body);letter-spacing:0;margin-top:14px}
+.art-text h3+*{margin-top:-6px}
+.art-text strong{font-weight:600}
+.art-text a{color:var(--logo);text-decoration-color:rgba(12,88,129,.35);text-underline-offset:3px}
+.art-text a:hover{color:var(--ink);text-decoration-color:currentColor}
+.art-list,:is(.art-text,.art-faq__a,.art-note)>:is(ul,ol):not([class]),.art-text li>:is(ul,ol){display:grid;gap:10px;padding:0;list-style:none}
+.art-list>li,:is(.art-text,.art-faq__a,.art-note)>:is(ul,ol):not([class])>li,.art-text li>:is(ul,ol)>li{position:relative;padding-left:30px}
+.art-list>li::before,:is(.art-text,.art-faq__a,.art-note)>ul:not([class])>li::before,.art-text li>ul>li::before{content:"";position:absolute;left:2px;top:.82em;width:14px;height:2px;border-radius:2px;background:var(--ink)}
+:is(.art-text,.art-faq__a,.art-note)>ol:not([class]){counter-reset:ol}
+:is(.art-text,.art-faq__a,.art-note)>ol:not([class])>li{counter-increment:ol}
+:is(.art-text,.art-faq__a,.art-note)>ol:not([class])>li::before{content:counter(ol);position:absolute;left:0;top:0;font:400 15px/1.75 var(--f-display);color:var(--logo);letter-spacing:-.02em}
+.art-text li>ul,.art-text li>ol{margin-top:8px}
+
+/* checklist: one light card, each step ticked in a ring */
+.art-check{display:grid;padding:clamp(6px,1vw,10px) clamp(20px,2.4vw,32px);list-style:none;border:1px solid rgba(11,52,70,.11);border-radius:var(--r-card);
+  background:linear-gradient(var(--white),#e7eef1)}
+/* a block, not a grid: an item mixes <strong> and plain text, and a grid would put each piece in its own cell */
+.art-check li{position:relative;padding:14px 0 14px 42px;line-height:1.55}
+.art-check li+li{border-top:1px solid var(--line)}
+.art-check li::before{content:"";position:absolute;left:0;top:12px;width:28px;height:28px;border-radius:50%;background:var(--ink);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Ccircle cx='14' cy='14' r='13.25' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3Cpath d='M9 14.5l3.4 3.3L19.2 11' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Ccircle cx='14' cy='14' r='13.25' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3Cpath d='M9 14.5l3.4 3.3L19.2 11' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+
+/* data table: up to 4–5 columns; too wide — it scrolls inside its plate, never the page */
+.art-table{position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r-card);box-shadow:inset 0 0 0 1px var(--line);
+  /* scroll hints: the edge shades ride with the content and uncover when there is more to the side */
+  background:linear-gradient(90deg,var(--white) 30%,rgba(248,251,252,0)) left/40px 100% no-repeat local,
+             linear-gradient(270deg,var(--white) 30%,rgba(248,251,252,0)) right/40px 100% no-repeat local,
+             radial-gradient(farthest-side at 0 50%,rgba(11,52,70,.14),transparent) left/12px 100% no-repeat scroll,
+             radial-gradient(farthest-side at 100% 50%,rgba(11,52,70,.14),transparent) right/12px 100% no-repeat scroll,var(--white);
+  scrollbar-width:thin}
+.art-table:focus-visible{outline:2px solid var(--logo);outline-offset:2px}
+.art-table table{width:100%;min-width:34rem;border-collapse:collapse;font-size:var(--fs-small);line-height:1.5}
+.art-table th,.art-table td{padding:14px 18px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.art-table th:first-child,.art-table td:first-child{padding-left:clamp(18px,2vw,26px)}
+.art-table th:last-child,.art-table td:last-child{padding-right:clamp(18px,2vw,26px)}
+.art-table thead th{padding-top:18px;font-weight:600;color:var(--ink);border-bottom:1px solid var(--ink);white-space:nowrap}
+.art-table tbody tr:last-child>*{border-bottom:0}
+.art-table tbody th,.art-table tbody td:first-child{font-weight:500;color:var(--ink)}
+.art-table td{color:var(--muted)}
+.art-table td strong{color:var(--ink)}
+.art-table--narrow table{min-width:0}
+
+/* side notes: an explanation on mist, a warning on white in an ink ring */
+.art-note{position:relative;display:grid;gap:8px;padding:20px clamp(20px,2.4vw,28px) 20px calc(clamp(20px,2.4vw,28px) + 40px);border-radius:var(--r-card);line-height:1.6;max-width:68ch}
+.art-note>*{margin:0}
+.art-note::before{content:"";position:absolute;left:clamp(20px,2.4vw,28px);top:19px;width:26px;height:26px;border-radius:50%}
+.art-note--note{background:var(--mist)}
+.art-note--note::before{box-shadow:inset 0 0 0 1.5px var(--ink);
+  background:linear-gradient(var(--ink),var(--ink)) 50% 7px/1.8px 1.8px no-repeat,linear-gradient(var(--ink),var(--ink)) 50% 11px/1.8px 8px no-repeat}
+.art-note--warn{background:var(--white);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.art-note--warn::before{background:linear-gradient(var(--white),var(--white)) 50% 6px/2px 9px no-repeat,linear-gradient(var(--white),var(--white)) 50% 17px/2px 2px no-repeat,var(--ink)}
+.art-note strong:first-child{font-weight:600}
+
+/* figure in the text and its placeholder */
+.art-fig{display:grid;gap:10px;margin:8px 0}
+.art-fig>picture{display:block}
+.art-fig img{display:block;width:100%;height:auto;border-radius:var(--r-card);background:var(--mist)}
+.art-fig figcaption{font-size:var(--fs-micro);color:var(--muted);max-width:68ch}
+.art-slot{display:grid;place-items:center;align-content:center;gap:10px;aspect-ratio:16/9;padding:24px;border-radius:var(--r-card);text-align:center;
+  background:repeating-linear-gradient(135deg,transparent 0 14px,rgba(11,52,70,.035) 14px 15px),var(--mist);box-shadow:inset 0 0 0 1px var(--line);
+  color:var(--muted);font-size:var(--fs-micro);line-height:1.45}
+.art-slot::before{content:"";width:28px;height:22px;border-radius:5px;box-shadow:inset 0 0 0 1.5px currentColor;
+  background:radial-gradient(circle at 70% 32%,currentColor 2.4px,transparent 3px),linear-gradient(135deg,transparent 52%,currentColor 52% 58%,transparent 58%) 0 4px/100% 100% no-repeat;opacity:.7}
+.art-slot>*{max-width:46ch;margin:0}
+
+/* widget (calculator, test): its own look comes with the widget; empty — a quiet plate on the test host */
+.art-widget{margin:8px 0}
+.art-widget:empty{display:grid;place-items:center;min-height:180px;border-radius:30px;background:var(--mist);box-shadow:inset 0 0 0 1px var(--line);color:var(--muted);font-size:var(--fs-small)}
+.art-widget:empty::before{content:"widget · " attr(data-widget)}
+
+/* FAQ: <details> on hairlines, plus → minus, as on «Схуднення» */
+.art-faq{border-top:1px solid var(--line)}
+.art-faq__item{border-bottom:1px solid var(--line)}
+.art-faq__item>summary{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:20px 0;cursor:pointer;list-style:none;
+  font:300 clamp(18px,.5vw + 15px,21px)/1.3 var(--f-display);letter-spacing:-.02em;transition:color var(--t-fast)}
+.art-faq__item>summary::-webkit-details-marker{display:none}
+.art-faq__item>summary::after{content:"";flex:none;width:32px;height:32px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--line);
+  background:linear-gradient(var(--ink),var(--ink)) center/12px 1.6px no-repeat,linear-gradient(var(--ink),var(--ink)) center/1.6px 12px no-repeat}
+.art-faq__item[open]>summary::after{background:linear-gradient(var(--white),var(--white)) center/12px 1.6px no-repeat,var(--ink)}
+.art-faq__item>summary:hover{color:var(--logo)}
+.art-faq__item>summary:focus-visible{outline:2px solid var(--logo);outline-offset:4px;border-radius:6px}
+.art-faq__a{display:grid;gap:12px;padding:0 0 22px;color:var(--muted);max-width:64ch}
+.art-faq__a>*{margin:0}
+.art-faq__item[open] .art-faq__a{animation:art-in var(--t-med) var(--ease-out)}
+@keyframes art-in{from{opacity:0;transform:translateY(6px)}}
+
+/* call to action: the site's ink panel; the button is the site's (.btn → ice on ink) */
+.art-cta{display:grid;gap:14px;justify-items:start;margin:clamp(12px,2vw,24px) 0;padding:clamp(28px,3.4vw,48px);border-radius:30px;background:var(--ink);color:var(--white)}
+.art-cta>*{margin:0}
+.art-text .art-cta h2{margin:0;font-size:clamp(24px,1.6vw + 14px,34px);font-weight:300;line-height:1.12;max-width:20ch;color:var(--white)}
+.art-cta p{color:var(--muted-dark);max-width:52ch;line-height:1.6}
+.art-cta .btn{margin-top:8px;background:var(--ice);color:var(--ink)}
+.art-cta .btn:hover{background:var(--white)}
+.art-cta :focus-visible{outline-color:var(--ice)}
+.art-text .art-cta a:not(.btn){color:var(--ice)}
+
+/* sources and disclaimer: small print */
+.art-sources{font-size:var(--fs-micro);line-height:1.6;color:var(--muted)}
+.art-sources ol{display:grid;gap:8px;margin:0;padding:0;list-style:none;counter-reset:src}
+.art-sources li{position:relative;padding-left:28px;counter-increment:src;overflow-wrap:anywhere}
+.art-sources li::before{content:counter(src) ".";position:absolute;left:0;font-variant-numeric:tabular-nums;color:var(--ink)}
+.art-text .art-sources a{color:var(--muted);text-decoration-color:var(--silver)}
+.art-text .art-sources a:hover{color:var(--ink)}
+.art-disclaimer{margin-top:clamp(12px,2vw,24px)!important;padding-top:18px;border-top:1px solid var(--line);font-size:var(--fs-micro);line-height:1.6;color:var(--muted);max-width:68ch}
+
+/* gaps the people still have to fill: loud on purpose, the test host only (strict build refuses them) */
+mark.art-gap{padding:.1em .3em;border-radius:4px;background:#ffe14d;color:var(--ink);box-shadow:0 0 0 1px #e0b400;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+/* ---------- cards: «read next» under an article, the «Схуднення» hub, the blog list ---------- */
+.art-related{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.6vw,20px);margin-top:var(--section)}
+.art-related>h2{grid-column:1/-1;font-size:var(--fs-h3);font-weight:300;margin-bottom:clamp(6px,1vw,16px)}
+.art-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.6vw,20px)}
+.art-card{display:grid;grid-template-rows:auto auto 1fr;align-content:start;border-radius:24px;overflow:hidden;background:var(--white);box-shadow:inset 0 0 0 1px var(--line);
+  color:var(--ink);text-decoration:none;transition:box-shadow var(--t-fast)}
+.art-card>img,.art-card>.art-slot{display:block;width:100%;aspect-ratio:16/9;height:auto;object-fit:cover;background:var(--mist);border-radius:0}
+/* the generator wraps the cover in <picture> (webp + jpg): the picture is the cell, its img fills it */
+.art-card>picture{display:block;overflow:hidden;background:var(--mist)}
+.art-card>picture>img{display:block;width:100%;aspect-ratio:16/9;height:auto;object-fit:cover}
+.art-card>.art-slot{padding:16px}
+.art-card__t{padding:20px clamp(20px,2vw,26px) 0;font:300 clamp(19px,.5vw + 16px,22px)/1.2 var(--f-display);letter-spacing:-.025em;overflow-wrap:break-word;text-wrap:balance}
+.art-card__d{padding:10px clamp(20px,2vw,26px) 24px;font-size:var(--fs-small);line-height:1.5;color:var(--muted)}
+.art-card:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+.art-card:hover .art-card__t{color:var(--logo)}
+.art-card:focus-visible{outline:2px solid var(--logo);outline-offset:3px}
+
+/* hub «Схуднення» and the blog list: the generator fills .art-cards between <!-- seo-cards:… --> markers; nothing there — no section */
+.wl-guide__title{margin-bottom:clamp(24px,3vw,44px)}
+.pg-sec:has(.art-cards):not(:has(.art-card)){display:none}
+.art-card>img.art-card__img--product{object-fit:contain;padding:clamp(16px,2.4vw,28px)}
+
+/* ---------- embed: the same text inside an existing page, under its own head (no H1, no crumbs) ---------- */
+.art.art--embed{width:min(var(--wrap),100% - 2*var(--gutter))}
+.wrap>.art.art--embed{width:100%}
+.art--embed>.art-body:first-child{margin-top:0}
+
+/* ---------- narrower screens: contents above the text, folded ---------- */
+@container art (max-width:999.98px){
+  .art-body{grid-template-columns:minmax(0,1fr);gap:clamp(24px,4vw,40px);max-width:46rem}
+  .art-text{grid-column:1}
+  .art-toc{position:static;max-height:none;overflow:visible;border-radius:20px;background:var(--white);box-shadow:inset 0 0 0 1px var(--line)}
+  .art-toc>ol{padding:12px 20px}
+  .art-toc summary{min-height:56px;padding:0 20px;cursor:pointer;font:500 var(--fs-body)/1.3 var(--f-body);color:var(--ink)}
+  .art-toc summary::after{content:"";flex:none;width:32px;height:32px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--line);
+    background:linear-gradient(var(--ink),var(--ink)) center/12px 1.6px no-repeat,linear-gradient(var(--ink),var(--ink)) center/1.6px 12px no-repeat}
+  .art-toc details[open] summary::after{background:linear-gradient(var(--white),var(--white)) center/12px 1.6px no-repeat,var(--ink)}
+  .art-toc details ol{margin:0 20px 16px}
+  .art-toc a{padding:9px 0 9px 14px}
+}
+@media (max-width:1099px){
+  .art-related,.art-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .art-related>h2{grid-column:1/-1}
+}
+@media (max-width:760px){
+  .art-cover{aspect-ratio:4/3;border-radius:24px}
+  .art-head{gap:12px}
+  .art-text{gap:16px}
+  .art-check{padding:4px 18px}
+  .art-table{border-radius:18px}
+  .art-table th,.art-table td{padding:12px 14px}
+  .art-note{padding:18px 18px 18px 58px}
+  .art-note::before{left:18px;top:17px}
+  /* the panel runs edge to edge on phones, like the other ink panels */
+  .art-cta{margin-inline:calc(-1 * var(--gutter));border-radius:0;padding:36px var(--gutter)}
+  .art-cta .btn{width:100%}
+  .art-related,.art-cards{grid-template-columns:1fr;gap:12px}
+  /* cards as compact rows on phones: a 96 px thumbnail beside the title and two lines of the description */
+  .art-card{grid-template-columns:96px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:14px;align-items:start;padding:12px;border-radius:20px}
+  .art-card>img,.art-card>.art-slot,.art-card>picture{grid-row:1 / 3;aspect-ratio:1;border-radius:12px}
+  .art-card>picture>img{height:100%;aspect-ratio:auto}
+  .art-card>.art-slot{padding:0;font-size:0;gap:0}
+  .art-card>.art-slot>*{display:none}
+  .art-card>img.art-card__img--product{padding:8px}
+  .art-card__t{padding:2px 0 0;font-size:17px;line-height:1.22}
+  .art-card__d{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;padding:6px 0 2px;font-size:14px;line-height:1.45}
+}
+@media (max-width:420px){.art-h1{font-size:clamp(25px,7.6vw,30px)}.art-text h2{font-size:clamp(22px,6.6vw,26px)}}
+@media (prefers-reduced-motion:reduce){.art-faq__item[open] .art-faq__a{animation:none}.art-toc a::after{transition:none}}
+@media print{.art-toc,.art-cta,.art-related{display:none}.art-body{display:block}}

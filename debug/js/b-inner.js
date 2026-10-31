@@ -20,6 +20,37 @@
     }, { passive: true });
   }
 
+  // long articles (css/b-article.css): the contents stay open beside the text on wide screens, folded above it on narrow ones;
+  // the section being read is marked in the contents; on narrow screens a jump folds the contents back
+  var toc = document.querySelector('.art-toc');
+  if (toc) {
+    // «wide» = the block itself is ≥ 1000 px (b-article.css switches by a container query: embeds sit in narrower columns)
+    var art = toc.closest('.art') || doc, wide = { matches: false };
+    var fit = function () {
+      var w = art.clientWidth >= 1000;
+      if (w !== wide.matches || !fit.done) { wide.matches = w; if (box) box.open = w; fit.done = true; }
+    };
+    var box = toc.querySelector('details');
+    fit(); addEventListener('resize', fit);
+    var links = [].slice.call(toc.querySelectorAll('a[href^="#"]')), heads = [];
+    links.forEach(function (a) {
+      var h = document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1)));
+      if (h) heads.push({ a: a, h: h });
+      a.addEventListener('click', function () { if (box && !wide.matches) box.open = false; });
+    });
+    if (heads.length) {
+      var on = null, tick = false;
+      var mark = function () {
+        tick = false;
+        var cur = null, line = innerHeight * 0.3;
+        heads.forEach(function (x) { if (x.h.getBoundingClientRect().top <= line) cur = x; });
+        if (cur !== on) { if (on) on.a.classList.remove('is-on'); on = cur; if (on) on.a.classList.add('is-on'); }
+      };
+      addEventListener('scroll', function () { if (!tick) { tick = true; requestAnimationFrame(mark); } }, { passive: true });
+      mark();
+    }
+  }
+
   var lb = document.getElementById('lightbox');
   if (lb) {
     var lbImg = lb.querySelector('.lightbox__img'), opener = null;

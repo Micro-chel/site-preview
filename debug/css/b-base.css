@@ -122,6 +122,9 @@ body.nav-open .site-header{--veil:var(--white);box-shadow:0 1px 0 var(--line),0 
 .site-nav__sub .site-nav__link{display:block;padding:10px 12px;border-radius:10px;color:var(--ink)}
 .site-nav__sub .site-nav__link:hover{background:var(--frost)}
 .site-nav__item--has-sub:hover .site-nav__sub,.site-nav__item--has-sub:focus-within .site-nav__sub{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+/* «Схуднення» (SEO 31.10): the hub closes the list, set apart by a hairline */
+.site-nav__all{margin-top:4px;padding-top:4px;border-top:1px solid var(--line)}
+.site-nav__sub .site-nav__all .site-nav__link{color:var(--logo);font-weight:500}
 .site-lang-switch{flex:none}
 .lang-switch{display:flex;border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;background:rgba(248,251,252,.6)}
 .lang-switch__btn{font-size:13px;font-weight:500;padding:9px 12px;min-height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--r-pill);color:var(--muted);text-decoration:none;min-width:36px;text-align:center}
