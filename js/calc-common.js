@@ -185,7 +185,8 @@
       out.innerHTML =
         '<p class="calc-result__title">' + esc(T.excluded) + '</p>' +
         '<p class="calc-note">' + esc(T.reason[reasonKey]) + '</p>' +
-        '<div class="calc-actions">' + bookBtn(T.book, opts.formId) +
+        // the clinic does not consult under-18s (owner, 02.11): no booking button on that screen
+        '<div class="calc-actions">' + (reasonKey === 'u18' ? '' : bookBtn(T.book, opts.formId)) +
         '<button type="button" class="calc-link calc-again">' + esc(T.change) + '</button></div>';
       out.hidden = false;
       out.querySelector('.calc-again').addEventListener('click', function () { show('excl'); });

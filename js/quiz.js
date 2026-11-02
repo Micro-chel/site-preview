@@ -42,7 +42,7 @@
       measure: '/kalkulyator-imt.html',
       privacy: '/polityka-konfidentsiinosti.html'
     },
-    u18Booking: false,           // [РЕШЕНИЕ ВЛАДЕЛЬЦА: чи консультує клініка підлітків до 18 років] — no booking until then
+    u18Booking: false,           // owner 02.11: the clinic does not consult under-18s — no booking button
     formId: 'quiz',              // booking buttons of the result
     text: {
       uk: {
